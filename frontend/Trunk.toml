@@ -1,0 +1,14 @@
+# frontend settings
+[serve]
+address = "0.0.0.0"
+port = 8080
+# tls_key_path = "self_signed_certs/key.pem"
+# tls_cert_path = "self_signed_certs/cert.pem"
+# cert = "../../cert.pem"
+# key = "../../key.pem"
+
+
+# backend settings
+[[proxy]]
+rewrite = "/api/v1/"
+backend = "http://localhost:5000"

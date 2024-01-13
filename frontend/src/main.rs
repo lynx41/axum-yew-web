@@ -1,3 +1,5 @@
+use frontend::App;
+
 fn main() {
-    println!("Hello, world!");
+    yew::ServerRenderer::<App>::new().render();
 }
