@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  database:
+    container_name: db_container
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=cc0
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=web_db
+    # volumes:
+      # ./scripts/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      # ./src/database/init.sql:/var/lib/postgresql/data/init.sql.
+    healthcheck:
+      test: psql -U cc0 -q -d web_db -c "SELECT 'ready';"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    ports:
+      - "5434:5432"
