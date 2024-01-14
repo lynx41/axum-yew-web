@@ -13,6 +13,9 @@ shared = { path = "../shared" }
 serde = { workspace = true }
 serde_json = { workspace = true }
 
+# run binary with commands like `port`, `ip`, `log`
+clap = { version = "4.4.6", features = ["derive"] }
+
 # async runtime
 tokio = { version = "1.28.1", features = ["macros", "rt-multi-thread"] }
 
