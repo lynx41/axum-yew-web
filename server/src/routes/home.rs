@@ -1,3 +1,5 @@
-pub async fn home() -> String {
-    "Welcome".to_owned()
+use axum::Json;
+
+pub async fn home() -> Json<String> {
+    Json::from("Welcome".to_owned())
 }

@@ -1,4 +1,4 @@
-use crate::State;
+use crate::{State, utils::cors::cors};
 
 mod home;
 
@@ -12,4 +12,6 @@ pub async fn routes(state: State) -> Router {
         .route("/", get(home))
 
         .with_state(state.clone())
+        .layer(cors())
+
 }

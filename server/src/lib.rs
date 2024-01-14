@@ -1,4 +1,5 @@
 mod routes;
+mod utils;
 
 use axum_server::tls_rustls::RustlsConfig;
 use routes::routes;
@@ -70,7 +71,7 @@ pub async fn run(database_url: &str) {
     let app = NormalizePathLayer::trim_trailing_slash()
         .layer(routes(state).await);
 
-    log::info!("LISTENING on http://{}", &sock_addr);
+    log::info!("LISTENING on https://{}", &sock_addr);
 
     // axum::Server::bind(&sock_addr)
     //     .serve(app.into_make_service())
