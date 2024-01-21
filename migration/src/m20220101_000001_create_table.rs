@@ -58,6 +58,7 @@ impl MigrationTrait for Migration {
             ])
             .values_panic([
                 "aiqo.main@proton.me".into(),
+                // pass: 1234
                 "$2b$14$I3wYkxG7NBA0je7qQqo65eKd4q3xHF5xAH3p0AQpkhONElxAdCl5q".into(),
                 false.into()
             ])

@@ -1,5 +1,6 @@
 mod routes;
 mod utils;
+mod database;
 
 use axum_server::tls_rustls::RustlsConfig;
 use routes::routes;
@@ -9,7 +10,6 @@ use std::net::SocketAddr;
 use clap::Parser;
 
 use axum::{ServiceExt, extract::FromRef};
-use dotenvy_macro::dotenv;
 use sea_orm::{Database, DatabaseConnection};
 use tower::Layer;
 use tower_http::normalize_path::NormalizePathLayer;
@@ -19,7 +19,7 @@ pub struct State {
     pub main: DatabaseConnection,
 }
 
-// Setup the cli with clap
+// Setup CLI setup with clap
 
 #[derive(Parser, Debug, Clone)]
 pub struct Opt {
@@ -52,7 +52,7 @@ pub async fn run(database_url: &str) {
     
     let opt = Opt::parse();
 
-    // enable console logging
+    // console logging : On
     tracing_subscriber::fmt::init();
 
     let main_database = Database::connect(database_url).await.unwrap();
@@ -65,7 +65,9 @@ pub async fn run(database_url: &str) {
     let config = RustlsConfig::from_pem_file(
         opt.cert_path,
         opt.key_path,
-    ).await.unwrap();
+    )
+        .await
+        .expect("Failed to load Cert and Key pem files");
 
     // NormalizePathLayer allowes `...\user` and `...\user\` be the same path
     let app = NormalizePathLayer::trim_trailing_slash()
@@ -73,12 +75,7 @@ pub async fn run(database_url: &str) {
 
     log::info!("LISTENING on https://{}", &sock_addr);
 
-    // axum::Server::bind(&sock_addr)
-    //     .serve(app.into_make_service())
-    //     .await
-    //     .expect("Unable to start the server, please check the config");
-
-    // // TLS support
+    // TLS support
     axum_server::bind_rustls(sock_addr, config)
         .serve(app.into_make_service())
         .await
