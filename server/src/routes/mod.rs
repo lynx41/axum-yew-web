@@ -6,6 +6,7 @@ mod users;
 
 use home::home;
 use profile::profile;
+use tower_http::services::ServeDir;
 use users::login;
 use crate::utils::guard::guard;
 
@@ -24,5 +25,7 @@ pub async fn routes(state: State) -> Router {
         .route("/", get(home))
 
         .with_state(state.clone())
+
+        .nest_service("/public", ServeDir::new("../public"))
         .layer(cors())
 }

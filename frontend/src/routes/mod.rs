@@ -1,6 +1,6 @@
 use crate::views::{
     home::Home,
-    profile::Profile,
+    cabinet::Cabinet,
     auth::Auth,
     not_found::NotFound
 };
@@ -13,8 +13,8 @@ use yew_router::Routable;
 pub enum Route {
     #[at("/")]
     Home,
-    #[at("/profile")]
-    Profile,
+    #[at("/cabinet")]
+    Cabinet,
     #[at("/auth")]
     Auth,
     #[not_found]
@@ -25,7 +25,7 @@ pub enum Route {
 pub fn switch(route: Route) -> Html {
     match route {
         Route::Home => html! { <Home /> },
-        Route::Profile => html! { <Profile /> },
+        Route::Cabinet => html! { <Cabinet /> },
         Route::Auth => html! { <Auth /> },
         Route::NotFound => html! { <NotFound /> }
     }
