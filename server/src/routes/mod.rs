@@ -27,5 +27,6 @@ pub async fn routes(state: State) -> Router {
         .with_state(state.clone())
 
         .nest_service("/public", ServeDir::new("../public"))
+
         .layer(cors())
 }

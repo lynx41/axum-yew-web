@@ -10,5 +10,5 @@ port = 8080
 
 # backend settings
 [[proxy]]
-rewrite = "/api/v1/"
-backend = "http://localhost:5000"
+rewrite = "/api/v2/"
+backend = "https://localhost:5000"
