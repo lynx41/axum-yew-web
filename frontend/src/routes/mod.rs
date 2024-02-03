@@ -6,7 +6,7 @@ use crate::views::{
 };
 
 use yew::{Html, html};
-use yew_router::Routable;
+use yew_router::{components::Redirect, Routable};
 
 
 #[derive(Clone, Routable, PartialEq)]
@@ -27,6 +27,8 @@ pub fn switch(route: Route) -> Html {
         Route::Home => html! { <Home /> },
         Route::Cabinet => html! { <Cabinet /> },
         Route::Auth => html! { <Auth /> },
-        Route::NotFound => html! { <NotFound /> }
+        Route::NotFound => html! { 
+            <Redirect<Route> to={Route::Home} />
+         }
     }
 }
