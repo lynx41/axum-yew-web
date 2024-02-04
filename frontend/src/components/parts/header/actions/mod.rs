@@ -2,7 +2,6 @@ mod language;
 
 use language::Languages;
 
-use crate::stores::language::LangSelector;
 
 use yew::{function_component, html, Html};
 
