@@ -7,6 +7,7 @@ use yew::{function_component, html, html_nested, Callback, Html, Properties};
 use yew_router::hooks::use_navigator;
 
 
+// list of languages can be changed in /src/stores/language.rs
 const LANGUAGE_KEY: &str = "Language";
 
 
@@ -70,7 +71,7 @@ pub fn lang_item(props: &LangItemProps) -> Html {
     if props.object_language == props.current_language {
         html! {
             <li class="lang__item lang-header__item lang-header__item_state_active">
-                <span class="lang__link lang__link--active">
+                <span class="lang__link lang__link--active ">
                     {props.object_language.to_string()}
                 </span>
             </li>
@@ -78,9 +79,10 @@ pub fn lang_item(props: &LangItemProps) -> Html {
     } else {
         html! {
             <li class="lang__item lang-header__item">
-                <a class="lang__link" href={format!("#lang:{}",props.object_language.clone())}
+                <a class="lang__link lang__link--possible" href={format!("#lang:{}",props.object_language.clone())}
                         onclick={onclick} >
-                    <img alt={props.object_language.to_string().clone()} src="https://localhost:5000/public/system/images/flag-ua.svg" />
+                    <img alt={props.object_language.to_string().clone()}
+                        src={format!("https://localhost:5000/public/system/images/locales/{}.svg", props.object_language)} />
                     {props.object_language.to_string()}
                 </a>
             </li>

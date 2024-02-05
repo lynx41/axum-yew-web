@@ -8,6 +8,22 @@ use yewdux::prelude::*;
 use yewdux::store;
 
 
+#[derive(Clone, Serialize, Deserialize, Store, PartialEq, Eq, Debug, Default, EnumIter)]
+#[store(storage = "local", storage_tab_sync)]
+// NAME NEW LANGUAGES as svg images in GIT_REPO/public/system/images/locales/
+pub enum LangSelector {
+    #[default]
+    UA,
+    ENG,
+}
+
+impl fmt::Display for LangSelector {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
+
 // #[derive(Clone, Serialize, Deserialize, Store, PartialEq, Eq, Debug, Default)]
 // // #[store(storage = "local", storage_tab_sync, listener(LogListener))]
 // #[store(storage = "local", storage_tab_sync)]
@@ -24,17 +40,3 @@ use yewdux::store;
 //         yewdux::log::info!("Language changed to {}", state.language);
 //     }
 // }
-
-#[derive(Clone, Serialize, Deserialize, Store, PartialEq, Eq, Debug, Default, EnumIter)]
-#[store(storage = "local", storage_tab_sync)]
-pub enum LangSelector {
-    #[default]
-    UA,
-    ENG,
-}
-
-impl fmt::Display for LangSelector {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:?}", self)
-    }
-}
