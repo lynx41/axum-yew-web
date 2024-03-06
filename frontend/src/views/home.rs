@@ -1,6 +1,9 @@
 use std::ops::Deref;
 
-use crate::components::assemblies::header::Header;
+use crate::components::assemblies::{
+    header::Header,
+    footer::Footer,
+};
 
 use gloo::net::http::Request;
 use yew::{
@@ -38,6 +41,8 @@ pub fn home() -> Html {
         <div>
             <p>{text.deref()}</p>
         </div>
+        
+        <Footer />
         </>
     }
 }

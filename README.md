@@ -15,9 +15,10 @@ _(can be changed in future)_
 - [x] TLC between backend and frontend;
 - [x] nginx config;
 
-- [ ] basic header;
+- [x] basic header;
     - [ ] fully workcable header menus;
-- [ ] footer;
+- [ ] basic footer;
+    - [ ] fully workable footer menus;
 - [ ] main page;
 - [ ] auth;
 - [ ] cabinet;

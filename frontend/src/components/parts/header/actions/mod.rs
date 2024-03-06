@@ -25,7 +25,7 @@ pub fn actions() -> Html {
 
 
         // development in plans, but for now 
-        // visible only for logged
+        // visible only for loggedls
         // <Help /> Only for non-auth users
 
 
