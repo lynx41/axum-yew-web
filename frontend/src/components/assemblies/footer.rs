@@ -15,9 +15,13 @@ pub fn footer() -> Html {
                 
                     <div class="layout">
                     
-                        <footer::inner_top::InnerTop />
+                        <div class="footer-top">
 
-                        <footer::inner_bot::InnerBot />
+                            <footer::inner_top::InnerTop />
+
+                            <footer::inner_bot::InnerBot />
+
+                        </div>
 
                     </div>
 

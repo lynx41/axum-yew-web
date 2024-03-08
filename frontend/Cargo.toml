@@ -51,3 +51,6 @@ regex = "1.10.2"
 
 # Enum Iterator
 strum = { version = "0.26.1", features = ["derive"] }
+
+# i18n - Allows to manage translations and switch between different languages
+yew-i18n = "0.1.2"
