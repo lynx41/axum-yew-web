@@ -8,7 +8,7 @@ use yew_router::hooks::use_navigator;
 
 
 // list of languages can be changed in /src/stores/language.rs
-const LANGUAGE_KEY: &str = "Language";
+pub const LANGUAGE_KEY: &str = "Language";
 
 
 #[function_component(Languages)]
