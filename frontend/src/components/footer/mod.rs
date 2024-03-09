@@ -42,8 +42,10 @@ pub fn footer(props: &Props) -> Html {
                                     <InnerTop selected_language={props.selected_language.clone()} />
                             </I18nProvider>
                             
-                            
-                            <InnerBot />
+
+                            <I18nProvider supported_languages={props.supported_languages.clone()} translations={bot_translations}>
+                                    <InnerBot selected_language={props.selected_language.clone()} />
+                            </I18nProvider>
 
                         </div>
 

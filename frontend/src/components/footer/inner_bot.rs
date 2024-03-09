@@ -7,47 +7,15 @@ use yew::{function_component, html, Html};
 
 use yew_i18n::{use_translation, I18nProvider};
 
-use crate::stores::language::LangSelector;
+use crate::{routes::Prop, stores::language::LangSelector};
 
 
 #[function_component(InnerBot)]
-pub fn inner_bot() -> Html {
-    
-    // let mut i18n = use_translation();
+pub fn inner_bot(prop: &Prop) -> Html {
 
-    let selected_langauge = LocalStorage::get::<LangSelector>("Language")
-        .unwrap();
+    let mut i18n = use_translation();
 
-    log!(format!("{}", selected_langauge));
-
-
-    // Landing page (Configuration and provider)
-
-    let supported_languages = vec!["ENG", "UA"];
-
-    let mut translations = HashMap::new();
-
-    translations.insert(
-        "ENG".to_string(),
-        serde_json::json!({
-            "my_text_field": "Hello"
-        })
-    );
-
-    translations.insert(
-        "UA".to_string(),
-        serde_json::json!({
-            "my_text_field": "Привіт"
-        })
-    );
-
-
-    // Inside component (hook to access the i18n context in my component)
-
-    // let mut i18n = use_translation();
-
-    // i18n.set_translation_language("ENG");
-
+    i18n.set_translation_language(&prop.selected_language);
 
     html! {
         
@@ -57,51 +25,66 @@ pub fn inner_bot() -> Html {
             <div class="footer-links">
                 // Box Title
                 <div class="footer-links__item footer-links__item--heading">
-                    <h3 class="footer-links__label">{"Інформацію про компанію"}</h3>
+                    <h3 class="footer-links__label">{ i18n.t("Information about the company") }</h3>
                 </div>
                 
                 // Box table
                 <ul class="footer-links__list">
                     
-                    // About us
                     <li class="footer-links__item">
-                        <a href="#about_company">{"Про нас"}</a>
+                        <a href="#About us">{ i18n.t("About us") }</a>
                     </li>
 
-                    // Terms and Conditions of Use
                     <li class="footer-links__item">
-                        <a href="#terms_and_conditions">{"Умови користування сайту"}</a>
+                        <a href="#Terms and Conditions">{ i18n.t("Terms and Conditions") }</a>
                     </li> 
                     
                     <li class="footer-links__item">
-                        <a href="#terms_and_conditions">{"Умови користування сайту"}</a>
+                        <a href="#Job opportunities">{ i18n.t("Job opportunities") }</a>
+                    </li> 
+
+                    <li class="footer-links__item">
+                        <a href="#Contacts">{ i18n.t("Contacts") }</a>
+                    </li> 
+
+                    <li class="footer-links__item">
+                        <a href="#All categories">{ i18n.t("All categories") }</a>
                     </li> 
 
                 </ul>
 
-                // 
             </div>
 
             // Block 2 "Help"
             <div class="footer-links">
                 // Box Title
                 <div class="footer-links__item footer-links__item--heading">
-                    <h3 class="footer-links__label">{"Інформацію про компанію"}</h3>
+                    <h3 class="footer-links__label">{ i18n.t("Help") }</h3>
                 </div>
                 
                 // Box table
                 <ul class="footer-links__list">
                     
-                    // About us
                     <li class="footer-links__item">
-                        <a href="#about_company">{"Про нас"}</a>
+                        <a href="#Delivery and payment">{ i18n.t("Delivery and payment") }</a>
                     </li>
 
-                    // Terms and Conditions of Use
                     <li class="footer-links__item">
-                        <a href="#terms_and_conditions">{"Умови користування сайту"}</a>
+                        <a href="#Credit">{ i18n.t("Credit") }</a>
                     </li> 
                     
+                    <li class="footer-links__item">
+                        <a href="#Warranty">{ i18n.t("Warranty") }</a>
+                    </li> 
+
+                    <li class="footer-links__item">
+                        <a href="#Return of goods">{ i18n.t("Return of goods") }</a>
+                    </li> 
+
+                    <li class="footer-links__item">
+                        <a href="#Service centers">{ i18n.t("Service centers") }</a>
+                    </li> 
+
                 </ul>
 
                 // 
@@ -111,81 +94,62 @@ pub fn inner_bot() -> Html {
             <div class="footer-links">
                 // Box Title
                 <div class="footer-links__item footer-links__item--heading">
-                    <h3 class="footer-links__label">{"Інформацію про компанію"}</h3>
+                    <h3 class="footer-links__label">{ i18n.t("Services") }</h3>
                 </div>
                 
                 // Box table
                 <ul class="footer-links__list">
-                    
-                    // About us
+
                     <li class="footer-links__item">
-                        <a href="#about_company">{"Про нас"}</a>
+                        <a href="#Bonus account">{ i18n.t("Bonus account") }</a>
                     </li>
 
-                    // Terms and Conditions of Use
                     <li class="footer-links__item">
-                        <a href="#terms_and_conditions">{"Умови користування сайту"}</a>
-                    </li> 
-                    
+                        <a href="#Gift certificates">{ i18n.t("Gift certificates") }</a>
+                    </li>
+
+                    <li class="footer-links__item">
+                        <a href="#Exchange">{ i18n.t("Exchange") }</a>
+                    </li>
+
+                    <li class="footer-links__item">
+                        <a href="#For corporate clients">{ i18n.t("For corporate clients") }</a>
+                    </li>
+
                 </ul>
 
-                // 
             </div>
 
             // Block 4 "Partnership"
             <div class="footer-links">
                 // Box Title
                 <div class="footer-links__item footer-links__item--heading">
-                    <h3 class="footer-links__label">{"Інформацію про компанію"}</h3>
+                    <h3 class="footer-links__label">{ i18n.t("Partners") }</h3>
                 </div>
                 
                 // Box table
                 <ul class="footer-links__list">
                     
-                    // About us
                     <li class="footer-links__item">
-                        <a href="#about_company">{"Про нас"}</a>
+                        <a href="#Sell on Biloba">{ i18n.t("Sell on Biloba") }</a>
                     </li>
 
-                    // Terms and Conditions of Use
                     <li class="footer-links__item">
-                        <a href="#terms_and_conditions">{"Умови користування сайту"}</a>
-                    </li> 
+                        <a href="#Cooperation with us">{ i18n.t("Cooperation with us") }</a>
+                    </li>
+
+                    <li class="footer-links__item">
+                        <a href="#Franchising">{ i18n.t("Franchising") }</a>
+                    </li>
+
+                    <li class="footer-links__item">
+                        <a href="#Premises for rent">{ i18n.t("Premises for rent") }</a>
+                    </li>
                     
-                    <li class="footer-links__item">
-                        <a href="#test_one">
-                            
-                            {"Hi"}
-                            // { i18n.t("my_text_field") }
-                        </a>
-
-                        <I18nProvider supported_languages={supported_languages} translations={translations}>
-                            <MyComponent />
-                        </I18nProvider>
-                    </li>
-
                 </ul>
 
-                // 
             </div>
         
         </div>
-    }
-}
-
-
-#[function_component(MyComponent)]
-pub fn my_component() -> Html {
-    let mut i18n = use_translation();
-
-    // This shit will be sended from the root component
-    let selected_langauge = LocalStorage::get::<LangSelector>("Language")
-        .unwrap()
-        .to_string();
-
-    i18n.set_translation_language(&selected_langauge);
-
-    html! {
-        <a href="#test_two">{ i18n.t("my_text_field") }</a>
     }
 }
