@@ -17,6 +17,15 @@ pub enum LangSelector {
     ENG,
 }
 
+impl LangSelector {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            LangSelector::ENG => "ENG",
+            LangSelector::UA => "UA",
+        }
+    }
+}
+
 impl fmt::Display for LangSelector {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{:?}", self)
