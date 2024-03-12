@@ -105,3 +105,22 @@ pub fn mobile_apps_ad() -> HashMap<String, Value> {
         )
     ])
 }
+
+pub fn bottom_loc() -> HashMap<String, Value> {
+    HashMap::from([
+        (
+            LangSelector::UA.to_string(),
+            serde_json::json!({
+                "Copyright": " © 2024 Інтернет-магазин «Білоба™» — Роздрібна торгівля ",
+                "TM": " ТМ используется на основании лицензии правообладателя BilobaLTD "
+            })
+        ),
+        (
+            LangSelector::ENG.to_string(),
+            serde_json::json!({
+                "Copyright": " © 2024 Biloba™ Online Store - Retail Sales ",
+                "TM": " TM is used under the license of the right holder BilobaLTD "
+            })
+        )
+    ])
+}
