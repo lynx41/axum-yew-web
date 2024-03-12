@@ -17,7 +17,8 @@ _(can be changed in future)_
 
 - [x] basic header;
     - [ ] fully workcable header menus;
-- [ ] basic footer;
+- [x] basic footer;
+    - [x] locales (eng, ua)
     - [ ] fully workable footer menus;
 - [ ] main page;
 - [ ] auth;
