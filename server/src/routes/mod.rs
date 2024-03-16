@@ -26,6 +26,7 @@ pub async fn routes(state: State) -> Router {
 
         .with_state(state.clone())
 
+        // place where images are located
         .nest_service("/public", ServeDir::new("../public"))
 
         .layer(cors())

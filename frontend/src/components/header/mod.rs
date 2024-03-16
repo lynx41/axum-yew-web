@@ -1,7 +1,13 @@
+pub mod button;
+pub mod logo;
+pub mod catalog;
+pub mod search_bar;
+
+pub mod actions;
+
 use gloo::console::debug;
 use yew::{function_component, html, Html};
 
-use crate::components::parts::header;
 
 #[function_component(Header)]
 pub fn header() -> Html {
@@ -12,19 +18,19 @@ pub fn header() -> Html {
                 <div class="header-layout">
                 
                     // header button
-                    <header::button::Button />
+                    <button::Button />
 
                     // header logo
-                    <header::logo::Logo />
+                    <logo::Logo />
 
                     // header catalog
-                    <header::catalog::Catalog />
+                    <catalog::Catalog />
 
                     // header search bar
-                    <header::search_bar::SearchBar />
+                    <search_bar::SearchBar />
 
                     // header actions
-                    <header::actions::Actions />
+                    <actions::Actions />
                     
                 </div>
             </div>

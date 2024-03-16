@@ -1,3 +1,5 @@
+# It only needs to be used once, so place it wherever you like.
+
 version: '3.8'
 services:
   database:

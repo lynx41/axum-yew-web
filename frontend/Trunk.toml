@@ -2,13 +2,21 @@
 [serve]
 address = "0.0.0.0"
 port = 8080
-# tls_key_path = "self_signed_certs/key.pem"
-# tls_cert_path = "self_signed_certs/cert.pem"
-# cert = "../../cert.pem"
-# key = "../../key.pem"
+
+[[proxy]]
+rewrite = "/ws/"
+backend = "ws://localhost:5000/ws/"
+
+[[proxy]]
+rewrite = "/api/"
+backend = "http://localhost:5000/api"
+
+[[proxy]]
+rewrite = "/static/"
+backend = "http://localhost:5000/static"
 
 
 # backend settings
-[[proxy]]
-rewrite = "/api/v2/"
-backend = "https://localhost:5000"
+# [[proxy]]
+# rewrite = "/api/v2/"
+# backend = "https://localhost:5000"

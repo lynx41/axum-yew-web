@@ -1,11 +1,10 @@
 use std::ops::Deref;
 
-use crate::components::assemblies::{
+use crate::components::{
     header::Header,
-    // footer::Footer,
+    footer::Footer,
 };
 
-use crate::components::footer::Footer;
 use crate::routes::Props;
 
 use gloo::console::log;

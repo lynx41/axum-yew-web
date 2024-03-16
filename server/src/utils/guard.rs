@@ -1,6 +1,8 @@
 use axum::{response::Response, TypedHeader, headers::{Authorization, authorization::Bearer}, middleware::Next, http::Request, extract::State};
+use log::info;
 use reqwest::StatusCode;
 use sea_orm::{DatabaseConnection, EntityTrait, QueryFilter, ColumnTrait};
+use tracing::debug;
 
 use crate::{
     database::users::{Entity as Users, self},
@@ -16,10 +18,13 @@ pub async fn guard<B>(
 
     // Get token
     let token = header.token().to_owned();
-    let (_, token) = token.split_once(' ').unwrap();
-    let token = token.to_owned();
 
-    log::debug!("{}", token);
+    log::info!("token1: {}", token);
+
+    // let (_, token) = token.split_once(' ').unwrap();
+    // let token = token.to_owned();
+
+    // log::debug!("token3: {}", token);
 
     // Try to find a user with the token
     let user = Users::find()
