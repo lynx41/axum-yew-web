@@ -1,9 +1,9 @@
-# It only needs to be used once, so place it wherever you like.
-
 version: '3.8'
 services:
+
+  # container1 - DATABASE
   database:
-    container_name: db_container
+    container_name: database
     image: postgres
     restart: always
     environment:
@@ -20,4 +20,36 @@ services:
       retries: 5
       start_period: 5s
     ports:
-      - "5434:5432"
+      - "5460:5432"
+    networks:
+      my_network:
+        ipv4_address: 172.56.0.2
+    
+  # container2 - Full-stack Application
+  fullstack:
+    container_name: fullstack
+    image: nginx
+    ports:
+      - "9091:443"
+    volumes:
+      # nginx config
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      # pem files for TLS
+      - ../cert.pem:/etc/ssl/certs/cert.pem
+      - ../key.pem:/etc/ssl/certs/key.pem
+      # frontend dist (compile /frontend with: trunk build --release)
+      - ../frontend/dist:/var/www/html
+      # backend executable (compile /server with: cargo build --release)
+      - ../target/release/server:/usr/bin/server
+    restart: always
+    networks:
+      my_network:
+        ipv4_address: 172.56.0.3
+
+networks:
+  my_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.56.0.0/16
+          gateway: 172.56.0.1

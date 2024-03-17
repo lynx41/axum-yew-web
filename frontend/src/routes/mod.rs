@@ -2,6 +2,7 @@ use crate::views::{
     home::Home,
     cabinet::Cabinet,
     auth::Auth,
+    test_protocol::TestProtol,
     not_found::NotFound
 };
 

@@ -5,6 +5,11 @@ Hi! This is my Bachelor's Project, but you are free to do wharever you want (#MI
 * for backend I use Rust framework - Axum.
 * for frontend I use Rust framework - Yew.
 
+![Home Page](/images/preview.png)
+<p style="text-align: center">Image 1 - Home page (buttons have no login for now)</p>
+
+
+
 
 ### TO-DO
 _(can be changed in future)_

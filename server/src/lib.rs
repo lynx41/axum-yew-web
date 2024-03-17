@@ -46,16 +46,21 @@ pub struct Opt {
     // KEY.PEM
     #[clap(long = "key-path", default_value = "../key.pem")]
     key_path: String,
+
+    // MAIN DATABASE CONNECTION STRING
+    #[clap(long = "connection-string", default_value="postgresql://cc0:password@localhost:5434/web_db")]
+    db_str: String, 
 }
 
-pub async fn run(database_url: &str) {
+// pub async fn run(database_url: &str) {
+pub async fn run() {
     
     let opt = Opt::parse();
 
     // console logging : On
     tracing_subscriber::fmt::init();
 
-    let main_database = Database::connect(database_url).await.unwrap();
+    let main_database = Database::connect(opt.db_str).await.unwrap();
     let state = State { main: main_database };
 
     let sock_addr: SocketAddr = format!("{}:{}",
