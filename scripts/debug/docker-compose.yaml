@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+
+  # container1 - DATABASE
+  database:
+    container_name: debug_database
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=cc0
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=web_db
+    # volumes:
+      # ./scripts/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      # ./src/database/init.sql:/var/lib/postgresql/data/init.sql.
+    healthcheck:
+      test: psql -U cc0 -q -d web_db -c "SELECT 'ready';"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    ports:
+      - "5434:5432"
+    networks:
+      my_network:
+        ipv4_address: 172.57.0.2
+    
+
+networks:
+  my_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.57.0.0/16
+          gateway: 172.57.0.1
