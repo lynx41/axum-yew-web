@@ -1,6 +1,8 @@
-### Prelude
+## Prelude
 
 Hi! This is my Bachelor's Project, but you are free to do wharever you want (#MIT License).
+
+(All development was tested only in Linux env, which mean idk if this repo would work under Windows/Mac or other Unix systems)
 
 * for backend I use Rust framework - Axum.
 * for frontend I use Rust framework - Yew.
@@ -11,25 +13,38 @@ Hi! This is my Bachelor's Project, but you are free to do wharever you want (#MI
 
 
 
-### TO-DO
-_(can be changed in future)_
+## TO-DO 
 
-- [x] docker for database;
-- [x] supports migrations;
-- [x] shared models as a library in workspace;
-- [x] TLC between backend and frontend;
-- [x] nginx config;
+#### Frontend
 
-- [x] basic header;
-    - [ ] fully workcable header menus;
-- [x] basic footer;
-    - [x] locales (eng, ua)
-    - [ ] fully workable footer menus;
-- [ ] main page;
-- [ ] auth;
-- [ ] cabinet;
-- [ ] categories;
+- [x] visual header
+    - [ ] workable header
+    - [ ] locales
 
-___
+- [x] visual footer
+    - [ ] workable footer
+    - [x] locales
 
-_(this file will be updated in the future)_
+- [ ] pages
+
+
+#### Backend
+
+- [x] tls support (.pem)
+- [x] run with commands
+
+#### Database
+
+- [x] workable
+
+#### Other
+
+- [x] migration support
+    - [ ] migration scripting
+
+- [x] docker-compose for fullstack
+    - [ ] docker-compose scripting
+
+- [x] nginx config
+
+- [x] shared models as a lib in workspace
