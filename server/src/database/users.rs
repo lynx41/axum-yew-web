@@ -10,19 +10,42 @@ pub struct Model {
     #[sea_orm(unique)]
     pub email: String,
     pub password: String,
-    pub name: Option<String>,
-    pub surname: Option<String>,
-    pub middle_name: Option<String>,
-    pub created_at: Option<DateTimeWithTimeZone>,
-    pub last_login: Option<DateTimeWithTimeZone>,
-    pub modified_at: Option<DateTimeWithTimeZone>,
-    pub deleted_at: Option<DateTimeWithTimeZone>,
-    pub is_admin: Option<bool>,
-    pub token: Option<String>,
-    pub avatar_url: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {}
+pub enum Relation {
+    #[sea_orm(has_many = "super::sessions::Entity")]
+    Sessions,
+    #[sea_orm(has_one = "super::user_info::Entity")]
+    UserInfo,
+    #[sea_orm(has_one = "super::user_logs::Entity")]
+    UserLogs,
+    #[sea_orm(has_one = "super::user_roles::Entity")]
+    UserRoles,
+}
+
+impl Related<super::sessions::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Sessions.def()
+    }
+}
+
+impl Related<super::user_info::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::UserInfo.def()
+    }
+}
+
+impl Related<super::user_logs::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::UserLogs.def()
+    }
+}
+
+impl Related<super::user_roles::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::UserRoles.def()
+    }
+}
 
 impl ActiveModelBehavior for ActiveModel {}

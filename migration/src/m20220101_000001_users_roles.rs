@@ -90,6 +90,7 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(UserRoles::UserId)
                             .integer()
                             .not_null()
+                            .unique_key()
                     )
 
                     .to_owned()
@@ -194,17 +195,19 @@ impl MigrationTrait for Migration {
             .await?;
 
         // write here for `down`
+
         manager
-            .drop_table(Table::drop().table(Users::Table).to_owned())
+            .drop_table(Table::drop().table(UserRoles::Table).to_owned())
             .await?;
 
         manager
             .drop_table(Table::drop().table(Roles::Table).to_owned())
             .await?;
-        
+
         manager
-            .drop_table(Table::drop().table(UserRoles::Table).to_owned())
+            .drop_table(Table::drop().table(Users::Table).to_owned())
             .await
+
 
     }
 }

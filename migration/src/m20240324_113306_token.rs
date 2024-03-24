@@ -33,6 +33,13 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(Sessions::Token)
                             .string()
                     )
+
+                    .col(
+                        ColumnDef::new(Sessions::MacAddress)
+                            .mac_address()
+                            .not_null()
+                    )
+
                         .to_owned()
             )
                 .await?;
@@ -76,4 +83,5 @@ enum Sessions {
     Id,
     UserId,
     Token,
+    MacAddress
 }

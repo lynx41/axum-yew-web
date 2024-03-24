@@ -8,8 +8,18 @@ Hi! This is my Bachelor's Project, but you are free to do wharever you want (#MI
 * for frontend I use Rust framework - Yew.
 
 ![Home Page](/images/preview.png)
-<p style="text-align: center">Image 1 - Home page (buttons have no login for now)</p>
+<p align="center">
+    Image 1 - Home page (buttons have no login for now)
+</p>
 
+## REPOSITORY GUIDE
+* ##### /frontent - the root of frontent.
+* ##### /images - folder for repo images, NOT used in the website itself.
+* ##### /migration - migrations for the database.
+* ##### /public - folder for images, used in the webiste itself.
+* ##### /scripts - folder for production automotion, configs, etc.
+* ##### /server - the root of backend.
+* ##### /shared - models for data representation, used in front and back.
 
 
 

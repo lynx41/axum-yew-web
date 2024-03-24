@@ -28,6 +28,7 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(UserLogs::UserId)
                             .integer()
                             .not_null()
+                            .unique_key()
                     )
 
                     .col(
@@ -74,6 +75,7 @@ impl MigrationTrait for Migration {
                             ColumnDef::new(UserInfo::UserId)
                                 .integer()
                                 .not_null()
+                                .unique_key()
                         )
 
                         .col(
