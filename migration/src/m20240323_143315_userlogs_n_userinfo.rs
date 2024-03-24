@@ -57,72 +57,84 @@ impl MigrationTrait for Migration {
                     .to_owned()
             ).await?;
 
-            manager
-                .create_table(
-                    Table::create()
-                        .table(UserInfo::Table)
-                        .if_not_exists()
+        manager
+            .create_table(
+                Table::create()
+                    .table(UserInfo::Table)
+                    .if_not_exists()
 
-                        .col(
-                            ColumnDef::new(UserInfo::Id)
-                                .integer()
-                                .not_null()
-                                .auto_increment()
-                                .primary_key()
-                        )
+                    .col(
+                        ColumnDef::new(UserInfo::Id)
+                            .integer()
+                            .not_null()
+                            .auto_increment()
+                            .primary_key()
+                    )
 
-                        .col(
-                            ColumnDef::new(UserInfo::UserId)
-                                .integer()
-                                .not_null()
-                                .unique_key()
-                        )
+                    .col(
+                        ColumnDef::new(UserInfo::UserId)
+                            .integer()
+                            .not_null()
+                            .unique_key()
+                    )
 
-                        .col(
-                            ColumnDef::new(UserInfo::FirstName)
-                                .string_len(31)
-                        )
+                    .col(
+                        ColumnDef::new(UserInfo::FirstName)
+                            .string_len(31)
+                    )
 
-                        .col(
-                            ColumnDef::new(UserInfo::MiddleName)
-                                .string_len(31)
-                        )
+                    .col(
+                        ColumnDef::new(UserInfo::MiddleName)
+                            .string_len(31)
+                    )
 
-                        .col(
-                            ColumnDef::new(UserInfo::LastName)
-                                .string_len(31)
-                        )
+                    .col(
+                        ColumnDef::new(UserInfo::LastName)
+                            .string_len(31)
+                    )
 
-                        .to_owned()
-                )
-                    .await?;
-
-
-            // Defining FOREIGN_KEYS
-            manager.create_foreign_key(
-                ForeignKey::create()
-                    .name("fk-userlogs-user-id")
-                    .from(UserLogs::Table, UserLogs::UserId)
-                    .to(Users::Table, Users::Id)
-                    .on_delete(ForeignKeyAction::SetNull)
                     .to_owned()
             )
                 .await?;
 
-            manager.create_foreign_key(
-                ForeignKey::create()
-                    .name("fk-userinfo-user-id")
-                    .from(UserInfo::Table, UserInfo::UserId)
-                    .to(Users::Table, Users::Id)
-                    .on_delete(ForeignKeyAction::SetNull)
-                    .to_owned()
-            )
-                .await
+
+        // Defining FOREIGN_KEYS
+        manager.create_foreign_key(
+            ForeignKey::create()
+                .name("fk-userlogs-user-id")
+                .from(UserLogs::Table, UserLogs::UserId)
+                .to(Users::Table, Users::Id)
+                .on_delete(ForeignKeyAction::SetNull)
+                .to_owned()
+        )
+            .await?;
+
+        manager.create_foreign_key(
+            ForeignKey::create()
+                .name("fk-userinfo-user-id")
+                .from(UserInfo::Table, UserInfo::UserId)
+                .to(Users::Table, Users::Id)
+                .on_delete(ForeignKeyAction::SetNull)
+                .to_owned()
+        )
+            .await?;
 
             
-            // Seed init data for the tables
-                // I don't know how to make values of TimestampWithTimeZone, so no seed
-                
+        // Seed init data for the tables
+            // I don't know how to make values of TimestampWithTimeZone, so no seed
+            // UPD: I found the solution I can write raw SQL insert
+        let db = manager.get_connection();
+        
+        db.execute_unprepared(
+            r#"
+                INSERT INTO user_logs (user_id, created_at, last_login, modified_at) VALUES
+                (1, '2024-03-24 12:00:00', '2024-03-24 12:30:00', '2024-03-24 12:30:00'),
+                (2, '2024-03-24 12:01:00', '2024-03-24 12:32:00', '2024-03-24 12:32:00');
+
+            "#
+        ).await?;
+
+        Ok(())
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {

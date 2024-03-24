@@ -37,6 +37,7 @@ pub async fn login(
 
         let jwt = create_token()?;
 
+        let db_session = SessionTable::f
 
         user.token = Set(Some(jwt.clone()));
 
