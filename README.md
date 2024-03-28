@@ -4,8 +4,8 @@ Hi! This is my Bachelor's Project, but you are free to do wharever you want (#MI
 
 (All development was tested only in Linux env, which mean idk if this repo would work under Windows/Mac or other Unix systems)
 
-* for backend I use Rust framework - Axum.
-* for frontend I use Rust framework - Yew.
+* for backend I use Rust framework - Axum (242 dependencies - Mar 27 2024).
+* for frontend I use Rust framework - Yew (326 dependencies - Mar 27 2024).
 
 ![Home Page](/images/preview.png)
 <p align="center">

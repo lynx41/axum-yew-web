@@ -9,8 +9,7 @@ pub struct Model {
     pub id: i32,
     pub user_id: i32,
     pub token: Option<String>,
-    #[sea_orm(column_type = "custom(\"macaddr\")")]
-    pub mac_address: String,
+    pub unique_id: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

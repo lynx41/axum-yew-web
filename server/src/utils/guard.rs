@@ -5,7 +5,7 @@ use sea_orm::{DatabaseConnection, EntityTrait, QueryFilter, ColumnTrait};
 use tracing::debug;
 
 use crate::{
-    database::users::{Entity as Users, self},
+    database::sessions::{Entity as Users, self},
     utils::app_error::AppError,
     utils::jwt::is_valid};
 
@@ -28,17 +28,24 @@ pub async fn guard<B>(
 
     // Try to find a user with the token
     let user = Users::find()
-        .filter(users::Column::Token.eq(&token))
+        .filter(sessions::Column::Token.eq(&token))
         .one(&database)
         .await
-        .map_err(|_| AppError::new(StatusCode::INTERNAL_SERVER_ERROR, "Internal Server Error"))?;
+        .map_err(|_| AppError::new(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "Internal Server Error"))?;
 
     // Validating token after getting from the adtabase to obsfucate that the token is wrong
     is_valid(&token)?;
 
     // Check for result
     let Some(user) = user else {
-        return Err(AppError::new(StatusCode::UNAUTHORIZED, "You are not autorized."))
+        return Err(
+            AppError::new(
+                StatusCode::UNAUTHORIZED,
+                "You are not autorized."
+            )
+        )
     };
 
     // Keep this, so it cash if user doens't exist

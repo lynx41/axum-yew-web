@@ -501,7 +501,7 @@ ol, ul {
 .footer-section {
     padding-top: calc(var(--global-spacer) * 4);
     padding-bottom: calc(var(--global-spacer) * 4);
-    background-color: var(--global-green);
+    background-color: var(--global-light-blue);
 }
 
 .footer-stores {

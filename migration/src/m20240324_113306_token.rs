@@ -35,8 +35,8 @@ impl MigrationTrait for Migration {
                     )
 
                     .col(
-                        ColumnDef::new(Sessions::MacAddress)
-                            .mac_address()
+                        ColumnDef::new(Sessions::UniqueId)
+                            .string()
                             .not_null()
                     )
 
@@ -83,5 +83,5 @@ enum Sessions {
     Id,
     UserId,
     Token,
-    MacAddress
+    UniqueId
 }

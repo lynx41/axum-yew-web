@@ -120,9 +120,7 @@ impl MigrationTrait for Migration {
             .await?;
 
             
-        // Seed init data for the tables
-            // I don't know how to make values of TimestampWithTimeZone, so no seed
-            // UPD: I found the solution I can write raw SQL insert
+        // SEED
         let db = manager.get_connection();
         
         db.execute_unprepared(

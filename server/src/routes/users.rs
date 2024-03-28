@@ -3,7 +3,7 @@ use sea_orm::{DatabaseConnection, EntityTrait, QueryFilter, ColumnTrait, IntoAct
 
 use crate::{
     database::users::{self, Model, Entity as UserTable},
-    database::sessions::{self, Model, Entity as SessionTable},
+    database::sessions::{self, Entity as SessionTable},
     utils::{app_error::AppError, jwt::{self, create_token}}
 };
 
@@ -33,21 +33,46 @@ pub async fn login(
         }
         
         // if user is real and password is correct
-        let mut user = db_user.into_active_model();
-
         let jwt = create_token()?;
 
-        let db_session = SessionTable::f
-
-        user.token = Set(Some(jwt.clone()));
-
-        let saved_user = user.save(&database)
+        // Rewrite expired session or crete a new one
+        let db_session = SessionTable::find()
+            .filter(sessions::Column::UserId.eq(db_user.id))
+            .filter(sessions::Column::UniqueId.eq(&request.unique_id))
+            .one(&database)
             .await
             .map_err(|_| AppError::new(
                 StatusCode::INTERNAL_SERVER_ERROR,
-                "Internal Server Error"
-            ))?;
-        
+                "Internal Server Error"))?;
+
+        if let Some(db_session) = db_session {
+            let mut session_update = db_session.into_active_model();
+            
+            session_update.token = Set(Some(jwt.clone()));
+
+            let _ = session_update.save(&database)
+                .await
+                .map_err(|_| AppError::new(
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    "Internal Server Error"
+                ))?;
+        } else {
+            let new_session = sessions::ActiveModel {
+                user_id: Set(db_user.id),
+                token: Set(Some(jwt.clone())),
+                unique_id: Set(request.unique_id),
+                ..Default::default()
+            };
+
+            // Try to save
+            let _ = new_session.save(&database)
+                .await
+                .map_err(|_| AppError::new(
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    "Internal Server Error"
+                ))?;
+        }
+
         Ok(Json::from(format!("token: {}", jwt)))
     } else {
         Err(AppError::new(
