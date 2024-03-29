@@ -39,8 +39,18 @@ pub fn switch(route: Route) -> Html {
     let supported_languages = get_supported_languages();
 
     match route {
-        Route::Home => html! { <Home selected_language={selected_language.clone()} supported_languages={supported_languages.clone()} /> },
-        Route::Cabinet => html! { <Cabinet /> },
+        Route::Home => html! {
+            <Home
+                selected_language={selected_language.clone()}
+                supported_languages={supported_languages.clone()}
+            />
+        },
+        Route::Cabinet => html! {
+            <Cabinet
+                selected_language={selected_language.clone()}
+                supported_languages={supported_languages.clone()}
+            />
+        },
         Route::Auth => html! { <Auth /> },
         Route::NotFound => html! { 
             <Redirect<Route> to={Route::Home} />
