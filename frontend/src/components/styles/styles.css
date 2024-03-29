@@ -125,7 +125,7 @@ header {
 }
 
 .menu__toggle {
-    display: none;
+    display: none !important;
     margin-right: 16px;
     background-color: #fff3;
     color: #fff;
@@ -157,7 +157,7 @@ header {
 
 @media (min-width: 1024px) {
     .menu__toggle {
-        display: flex;
+        display: flex !important;
     }
 }
 
@@ -351,6 +351,19 @@ button, input[type="submit"] {
     outline: none;
 }
 
+@media (max-width: 768px) {
+    .search-form__submit {
+        /* margin: -1px;
+        padding: 0;
+        height: 1px !important;
+        width: 1px !important;
+        border: 0;
+        clip: rect(0 0 0 0);
+        overflow: hidden !important; */
+        display: none !important;
+    }
+}
+
 .search-form__submit {
     display: inline-block;
     margin: 0;
@@ -358,6 +371,8 @@ button, input[type="submit"] {
     background-color: #00a046;
     color: #fff;
 }
+
+
 
 .button_size_medium {
     font-size: 16px;
@@ -452,15 +467,34 @@ ol, ul {
 
 /* orders section */
 .header-actions__item--user {
+    display: block;
+}
+
+/* @media (min-width: 768px) {
+    .header-actions__item--user {
+        display: block;
+    }
+} */
+
+.header-actions__item--notifications {
     display: none;
 }
 
 @media (min-width: 768px) {
-    .header-actions__item--user {
+    .header-actions__item--notifications {
         display: block;
     }
 }
 
+.header-actions__item--orders {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .header-actions__item--orders {
+        display: block;
+    }
+}
 
 .header__button {
     position: relative;
@@ -519,7 +553,7 @@ ol, ul {
 
 .footer-stores__heading {
     margin-bottom: 16px;
-    font-size: 10px;
+    font-size: 18px;
     color: #fff;
 }
 

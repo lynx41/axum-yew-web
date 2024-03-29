@@ -1,14 +1,14 @@
 mod language;
 mod orders;
 mod notifications;
-mod basket;
+mod cart;
 mod user;
 
 
 use language::Languages;
 use orders::Orders;
 use notifications::Notifications;
-use basket::Basket;
+use cart::Cart;
 use user::User;
 
 use yew::{function_component, html, Html};
@@ -57,7 +57,7 @@ pub fn actions() -> Html {
 
 
         // visible for everyone
-        <Basket />
+        <Cart />
 
         </ul>
     }

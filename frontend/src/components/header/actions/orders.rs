@@ -7,7 +7,7 @@ use crate::routes::Route;
 #[function_component(Orders)]
 pub fn orders() -> Html {
     html! {
-        <li class="header-actions__item header-actions__item--user">
+        <li class="header-actions__item header-actions__item--orders">
             <div class="header-actions__component">
                 <Link<Route> to={Route::Cabinet}>
                     <a class="header__button" href="#cabinet/orders">

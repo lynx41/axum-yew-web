@@ -1,8 +1,8 @@
 use yew::{function_component, html, Html};
 
 
-#[function_component(Basket)]
-pub fn basket() -> Html {
+#[function_component(Cart)]
+pub fn cart() -> Html {
     html! {
         <li class="header-actions__item header-actions__item--user">
         <div class="header-actions__component">

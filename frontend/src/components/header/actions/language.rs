@@ -24,7 +24,7 @@ pub fn languages() -> Html {
     };
     
     html! {
-        <li class="header-actions__item header-actions__item--langauge">
+        <li class="header-actions__item header-actions__item--language">
             
             <div class="header-actions__component">
                 <ul class="lang lang-header">
