@@ -7,11 +7,11 @@ use yew::{function_component, html, Html};
 
 use yew_i18n::{use_translation, I18nProvider};
 
-use crate::{routes::Prop, stores::language::LangSelector};
+use crate::components::props::SelectedLangauge;
 
 
 #[function_component(InnerBot)]
-pub fn inner_bot(prop: &Prop) -> Html {
+pub fn inner_bot(prop: &SelectedLangauge) -> Html {
 
     let mut i18n = use_translation();
 
@@ -131,7 +131,7 @@ pub fn inner_bot(prop: &Prop) -> Html {
                 <ul class="footer-links__list">
                     
                     <li class="footer-links__item">
-                        <a href="#Sell on Biloba">{ i18n.t("Sell on Biloba") }</a>
+                        <a href="#Sell on Biloba">{ i18n.t("Sell on HSLV") }</a>
                     </li>
 
                     <li class="footer-links__item">

@@ -3,11 +3,13 @@ use crate::{State, utils::cors::cors};
 mod home;
 mod profile;
 mod users;
+mod verify_token;
 
 use home::home;
 use profile::profile;
 use tower_http::services::ServeDir;
 use users::login;
+use verify_token::verify_token;
 use crate::utils::guard::guard;
 
 use axum::{Router, routing::{get, post}, middleware};
@@ -18,6 +20,7 @@ pub async fn routes(state: State) -> Router {
 
         // auth needed
         .route("/profile", get(profile))
+        .route("/verify_token", get(verify_token))
         .route_layer(middleware::from_fn_with_state(state.clone(), guard))
 
         // no auth needed

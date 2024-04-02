@@ -3,7 +3,7 @@ mod inner_bot;
 mod mobile_apps_ad;
 mod bottom;
 
-use crate::routes::Props;
+use crate::components::props::FooterProps;
 use crate::components::footer::{
     inner_top::InnerTop,
     inner_bot::InnerBot,
@@ -18,7 +18,7 @@ use yew_i18n::{use_translation, I18nProvider};
 
 
 #[function_component(Footer)]
-pub fn footer(props: &Props) -> Html {
+pub fn footer(props: &FooterProps) -> Html {
 
     let mobile_apps_ad_loc = footer_loc::mobile_apps_ad();
     // Footer TOP 

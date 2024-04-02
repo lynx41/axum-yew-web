@@ -5,58 +5,78 @@ use crate::components::{
     footer::Footer,
 };
 
-use crate::routes::Props;
+use crate::stores::language::{get_selected_langauge, get_supported_languages};
+use crate::components::props::IsAuth;
 
-use gloo::console::log;
+
 use gloo::net::http::Request;
-use yew::{
-    function_component, html,
-    suspense::{use_future, UseFutureHandle},Html,
-};
+use gloo::storage::{LocalStorage, Storage};
+use yew::platform::spawn_local;
+use yew::{hook, use_effect_with, use_state, HtmlResult};
+use yew::{function_component, html,Html};
+use yew::suspense::{Suspense, SuspensionResult};
 
 
 #[function_component(Home)]
-pub fn home(props: &Props) -> Html {
+pub fn home() -> Html {
     
-    let url = "https://localhost:5000";
+    // config
+    let selected_language = get_selected_langauge();
+    let supported_languages = get_supported_languages();
 
-    let text: Result<UseFutureHandle<String>, yew::suspense::Suspension> = use_future(
-        || async {
-            Request::get(url)
-                .send()
-                .await
-                .unwrap()
-                .json()
-                .await
-                .unwrap()
+    let is_auth = use_state(|| IsAuth::Unknown);
+
+    // Check if the user is authenticated or not
+    use_effect_with(
+        (),
+        {
+            let is_auth = is_auth.clone();
+            move |()| {
+                let is_auth = is_auth.clone();
+                spawn_local(async move {
+                
+                    if let Ok(token) = LocalStorage::get::<String>("Token") {
+                        let fetched_response = Request::get("https://localhost:5000/verify_token")
+                            .header("Authorization", &format!("Bearer {}", token))
+                            .send()
+                            .await;
+                        
+                        match fetched_response {
+                            Ok(r) => {
+                                if r.status() == 500 {
+                                    is_auth.set(IsAuth::No);
+                                } else {
+                                    is_auth.set(IsAuth::Yes);
+                                }
+                            },
+                            
+                            Err(_) => { is_auth.set(IsAuth::No); }
+                        }
+                    } else {
+                        is_auth.set(IsAuth::No);
+                    }
+                });
+            }
         }
     );
 
-    // it calculates everything twice during render and after render is fully ready.
-    // so to render only once you need to make your calculations on OK variant
-    let text = match text {
-        Ok(ref val) => {
-            // Here goes your calcualtions
-            // log!(format!("{:?}", props.supported_languages));
-            val.to_string()
-        },
-        Err(ref failed) => { String::from("[Loading]") }
-    };
-
-
     html! {
         <>
-        <Header />
-        
-        <div>
-            <p>{text.deref()}</p>
-        </div>
-        
-        <Footer 
-            selected_language={props.selected_language.clone()}
-            supported_languages={props.supported_languages.clone()} 
-        />
-        
+            <Header
+                selected_language={selected_language.clone()}
+                supported_languages={supported_languages.clone()}
+                is_auth={is_auth.deref().clone()}
+            />
+            
+            <div>
+                <p>{"HOME PAGE"}</p>
+                <p>{is_auth.to_string()}</p>
+            </div>
+            
+            <Footer 
+                selected_language={selected_language.clone()}
+                supported_languages={supported_languages.clone()}
+            />
         </>
     }
 }

@@ -3,16 +3,15 @@ mod views;
 mod stores;
 mod routes;
 
-use crate::{routes::{switch, Route}, stores::language::LangSelector};
+use crate::routes::{switch, Route};
 
-
-use gloo::console::debug;
-use yew::{Html, html, function_component};
+use yew::{function_component, html, Html};
 use yew_router::{BrowserRouter, Switch};
 
 
 #[function_component(App)]
 pub fn app() -> Html {
+        
     html! {
         <BrowserRouter>
             <Switch<Route> render={switch} />

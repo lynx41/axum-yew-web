@@ -1,12 +1,13 @@
 use std::fmt;
-use std::default;
-use std::rc::Rc;
 
+use gloo::storage::LocalStorage;
+use gloo::storage::Storage;
 use serde::{Deserialize, Serialize};
 use strum::EnumIter;
+use strum::IntoEnumIterator;
 use yewdux::prelude::*;
-use yewdux::store;
 
+pub const LANGUAGE_KEY: &str = "Language";
 
 #[derive(Clone, Serialize, Deserialize, Store, PartialEq, Eq, Debug, Default, EnumIter)]
 #[store(storage = "local", storage_tab_sync)]
@@ -32,20 +33,18 @@ impl fmt::Display for LangSelector {
     }
 }
 
+pub fn get_selected_langauge() -> String {
+    match LocalStorage::get::<LangSelector>(LANGUAGE_KEY) {
+        Ok(language) => language.to_string(),
+        Err(_) => {
+            let _ = LocalStorage::set(LANGUAGE_KEY, LangSelector::default());
+            LangSelector::default().to_string()
+        }
+    }
+}
 
-// #[derive(Clone, Serialize, Deserialize, Store, PartialEq, Eq, Debug, Default)]
-// // #[store(storage = "local", storage_tab_sync, listener(LogListener))]
-// #[store(storage = "local", storage_tab_sync)]
-// pub struct Language {
-//     pub language: LangSelector,
-// }
-
-// struct LogListener;
-
-// impl Listener for LogListener {
-//     type Store = Language;
-
-//     fn on_change(&mut self, _cx: &yewdux::Context, state: Rc<Self::Store>) {
-//         yewdux::log::info!("Language changed to {}", state.language);
-//     }
-// }
+pub fn get_supported_languages() -> Vec<&'static str> {
+    LangSelector::iter()
+        .map(|language| language.as_str())
+        .collect()
+}

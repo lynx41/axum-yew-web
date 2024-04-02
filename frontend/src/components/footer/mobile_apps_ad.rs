@@ -1,10 +1,10 @@
 use yew::{function_component, html, Html};
 use yew_i18n::use_translation;
 
-use crate::routes::Prop;
+use crate::components::props::SelectedLangauge;
 
 #[function_component(MobileAppsAd)]
-pub fn mobile_apps_ad(prop: &Prop) -> Html {
+pub fn mobile_apps_ad(prop: &SelectedLangauge) -> Html {
     
     let mut i18n = use_translation();
 

@@ -1,13 +1,11 @@
 use yew::{function_component, html, Html};
 use yew_i18n::use_translation;
 
-use crate::routes::Prop;
-
-
+use crate::components::props::SelectedLangauge;
 
 
 #[function_component(Bottom)]
-pub fn bottom(prop: &Prop) -> Html {
+pub fn bottom(prop: &SelectedLangauge) -> Html {
     
     let mut i18n = use_translation();
 

@@ -67,7 +67,6 @@ pub fn lang_item(props: &LangItemProps) -> Html {
         navigator.push(&Route::NotFound);
     });
 
-
     if props.object_language == props.current_language {
         html! {
             <li class="lang__item lang-header__item lang-header__item_state_active">
