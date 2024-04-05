@@ -6,7 +6,7 @@ pub mod search_bar;
 pub mod actions;
 
 use gloo::{console::{debug, log}, net::http::Request, storage::{LocalStorage, Storage}};
-use yew::{function_component, html, use_effect_with, use_mut_ref, use_state, Html, Properties};
+use yew::{function_component, html, use_effect_with, use_mut_ref, use_state, Callback, Html, MouseEvent, Properties};
 
 use crate::components::props::HeaderProps;
 
@@ -14,61 +14,10 @@ use crate::components::props::HeaderProps;
 #[function_component(Header)]
 pub fn header(props: &HeaderProps) -> Html {
 
-    // let is_auth = use_state(|| false);
-    // // let mut is_auth = false;
-    
-    // wasm_bindgen_futures::spawn_local(async move {
-    //     let is_auth = is_auth.clone();
-
-    //     if let Ok(token) = LocalStorage::get::<String>("Token") {
-    //         let url = "https://localhost:5000/verify_token";
-            
-    //         let fetched_response = Request::get(url)
-    //             .header("Authorization", &format!("Bearer {}", token))
-    //             .send()
-    //             .await;
-
-    //         log!("Have token");
-
-    //         match fetched_response {
-    //             Ok(_) => {
-    //                 is_auth.set(true);
-    //                 log!("good token");
-    //             },
-    //             Err(_) => {
-    //                 is_auth.set(true);
-    //                 log!("bad token");
-    //             }
-    //         }
-    //     } else { log!("NO token") };
-    // });
-
-    // let auth = *is_auth.clone().deref();
-
-    // use_effect_with(
-    //     (),
-    //     {
-    //         let is_auth = is_auth.clone();
-    //         move |()| {
-    //             let is_auth = is_auth.clone();
-    //             wasm_bindgen_futures::spawn_local(async move {
-    //                 let url = "https://localhost:5000";
-
-    //                 if let Ok(token) = LocalStorage::get::<String>("Token") {
-    //                     let fetched_response = Request::get(url)
-    //                         .header("Authorization", &format!("Bearer {}", token))
-    //                         .send()
-    //                         .await;
-
-    //                     match fetched_response {
-    //                         Ok(_) => { is_auth.set(true); },
-    //                         Err(_) => { }
-    //                     }
-    //                 };
-    //             })
-    //         }
-    //     }
-    // );
+    let user_onclick = props.user_btn_onclick.clone();
+    let user_btn_onclick = Callback::from(move |e: MouseEvent| {
+        user_onclick.emit(e);
+    });
 
     html! {
         <header>
@@ -91,6 +40,7 @@ pub fn header(props: &HeaderProps) -> Html {
                     <actions::Actions
                         selected_language={props.selected_language.clone()}
                         supported_languages={props.supported_languages.clone()}
+                        user_btn_onclick={props.user_btn_onclick.clone()}
                         is_auth={props.is_auth.clone()}
                     />
                     

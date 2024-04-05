@@ -14,13 +14,19 @@ use notifications::Notifications;
 use cart::Cart;
 use user::User;
 
-use yew::{function_component, html, use_effect_with, use_mut_ref, use_state, Html};
+use yew::{function_component, html, use_effect_with, use_mut_ref, use_state, Callback, Html, MouseEvent};
 
 use crate::components::props::{HeaderProps, IsAuth};
 
 
+
 #[function_component(Actions)]
 pub fn actions(props: &HeaderProps) -> Html {
+
+    let user_onclick = props.user_btn_onclick.clone();
+    let user_btn_onclick = Callback::from(move |e: MouseEvent| {
+        user_onclick.emit(e);
+    });
 
     html! {
         <ul class="header-actions">
@@ -37,7 +43,7 @@ pub fn actions(props: &HeaderProps) -> Html {
 
         // can be viewed only by GUESTS
         if {props.is_auth == IsAuth::No} {
-            <User />
+            <User onclick={props.user_btn_onclick.clone()} />
         }
 
 

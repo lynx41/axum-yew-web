@@ -57,11 +57,11 @@ pub fn cabinet() -> Html {
     } else {
         html! {
             <>
-                <Header
-                    selected_language={selected_language.clone()}
-                    supported_languages={supported_languages.clone()}
-                    is_auth={is_auth.deref().clone()}
-                />
+                // <Header
+                //     selected_language={selected_language.clone()}
+                //     supported_languages={supported_languages.clone()}
+                //     is_auth={is_auth.deref().clone()}
+                // />
                 
                 <p>{"Cabinet page"}</p> 
                 

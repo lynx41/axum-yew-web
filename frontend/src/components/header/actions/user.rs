@@ -1,11 +1,22 @@
-use yew::{function_component, html, Html};
+use yew::{function_component, html, Callback, Html, MouseEvent, Properties};
+
+#[derive(Properties, PartialEq)]
+pub struct Props {
+    pub onclick: Callback<MouseEvent>
+}
 
 #[function_component(User)]
-pub fn user() -> Html {
+pub fn user(props: &Props) -> Html {
+    
+    let onclick = props.onclick.clone();
+    let user_btn_onclick = Callback::from(move |e: MouseEvent| {
+        onclick.emit(e);
+    });
+    
     html! {
         <li class="header-actions__item header-actions__item--user">
             <div class="header-actions__component">
-                <button class="header__button">
+                <button class="header__button" onclick={user_btn_onclick}>
                     <svg aria-hidden="true">
                         <use href="#icon-user-simple">
                             <symbol id="icon-user-simple" viewBox="0 0 24 24">

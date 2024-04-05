@@ -1,10 +1,11 @@
-use yew::Properties;
+use yew::{Callback, MouseEvent, Properties};
 
 
 #[derive(Properties, PartialEq)]
 pub struct HeaderProps {
     pub selected_language: String,
     pub supported_languages: Vec<&'static str>,
+    pub user_btn_onclick: Callback<MouseEvent>,
     pub is_auth: IsAuth,
 }
 
