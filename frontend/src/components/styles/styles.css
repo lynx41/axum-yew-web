@@ -315,12 +315,6 @@ input, textarea {
     transition: border .2s ease-in-out;
 }
 
-@media (min-width: 768px) {
-    input, textarea {
-        font-size: 14px;
-    }
-}
-
 .search-form__clear {
     display: flex;
     flex-direction: row;
@@ -666,7 +660,7 @@ ol, ul {
     width: 16px;
 }
 
-.button--link {
+.button_type_link, .button--link {
     background: none;
     border: none;
     color: #3e77aa;
@@ -978,8 +972,18 @@ ol, ul {
     animation-play-state: running;
 }
 
+
+
 @media (min-width: 768px) {
     .modal__holder--small-medium {
+        margin-top: 10vh;
+        max-width: 440px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .modal__holder--small-medium {
+        margin-top: 20vh;
         max-width: 440px;
     }
 }
@@ -1043,5 +1047,149 @@ ol, ul {
     fill: var(--global-black-60);
     transition: all .2s ease;
 }
+
+.modal__content {
+    max-height: 100%;
+    padding: calc(var(--global-spacer) * 4);
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+    .modal__content {
+        padding: calc(var(--global-spacer) * 6);
+    }
+}
+
+
+    /* AUTH FORM START */
+.email {
+    margin-bottom: calc(var(--global-spacer) * 4);
+}
+
+.form__caption, .form__label {
+    color: #797878;
+    font-size: 12px;
+}
+
+.form__label {
+    display: block;
+    margin-bottom: 4px;
+}
+
+input, textarea {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: none;
+    background-color: #fff;
+    border: 1px solid #d2d2d2;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border .2s ease-in-out;
+}
+
+@media (min-width: 768px) {
+    .input, .textarea {
+        font-size: 14px;
+    }
+}
+
+input {
+    background-color: #fff;
+    box-sizing: border-box;
+    padding-left: 12px;
+    padding-right: 12px;
+    transition: border-color 0.3s ease;
+}
+
+input, input[_size_small] {
+    height: 32px;
+}
+
+input[_size_medium] {
+    height: 40px;
+}
+
+input:hover, textarea:hover {
+    border-color: #a6a5a5;
+}
+
+input:focus, textarea:focus {
+    /* border-color: #3e77aa; */
+    border-color: #76c9fd;
+    border-width: 3px;
+    /* border: 3px solid var(--global-light-blue); */
+}
+
+.email__input {
+    width: 100%;
+}
+
+.form__row--with-button, .form__row_with_button {
+    display: flex;
+    flex-direction: row;
+}
+
+.password__input {
+    width: 100%;
+}
+
+.form__toggle-password {
+    flex-shrink: 0;
+    justify-content: center;
+    width: 40px;
+}
+
+.form__toggle-password span i {
+    width: 24px;
+    height: 24px;
+}
+
+.form__toggle-password svg {
+    fill: #3e77aa;
+}
+
+.form__toggle-password:hover svg {
+    fill: #ff7878;
+}
+
+.button_type_link {
+    color: #3e77aa;
+    cursor: pointer;
+}
+
+.indentation__bottom {
+    margin-bottom: calc(var(--global-spacer) * 4);
+}
+
+.button--green, .button_color_green {
+    background-color: #00a046;
+    color: #fff;
+}
+
+button.button, input.button {
+    line-height: normal;
+}
+
+.submit-button {
+    width: 100%;
+}
+
+.submit-button_bottom {
+    margin-bottom: calc(var(--global-spacer) * 4);
+}
+
+.link-button__bottom {
+    margin-bottom: calc(var(--global-spacer) * 4);
+}
+
+.link-button {
+    width: 100%;
+}
+
+    /* AUTH FORM END */
+
 
 /* MODAL AUTH SECTION END */

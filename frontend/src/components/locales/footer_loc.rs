@@ -72,7 +72,7 @@ pub fn inner_bot_loc() -> HashMap<String, Value> {
                 "Exchange": "Обмін",
                 "For corporate clients": "Корпоративним клієнтам",
                 "Partners": "Партнерам",
-                "Sell on HSLV": "Продавати на Білобі",
+                "Sell on HSLV": "Продавати на HSLV",
                 "Cooperation with us": "Співпраця з нами",
                 "Franchising": "Франчайзинг",
                 "Premises for rent": "Оренда приміщень",

@@ -131,7 +131,7 @@ pub fn inner_bot(prop: &SelectedLangauge) -> Html {
                 <ul class="footer-links__list">
                     
                     <li class="footer-links__item">
-                        <a href="#Sell on Biloba">{ i18n.t("Sell on HSLV") }</a>
+                        <a href="#Sell on HSLV">{ i18n.t("Sell on HSLV") }</a>
                     </li>
 
                     <li class="footer-links__item">
