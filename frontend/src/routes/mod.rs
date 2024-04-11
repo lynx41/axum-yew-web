@@ -1,9 +1,6 @@
 use crate::views::{
-    home::Home,
-    cabinet::Cabinet,
+    cabinet::Cabinet, home::Home
 };
-
-use crate::stores::language::{get_selected_langauge, get_supported_languages};
 
 use yew::{html, Html};
 use yew_router::{components::Redirect, Routable};
@@ -32,11 +29,12 @@ pub fn switch(route: Route) -> Html {
 
         Route::Cabinet => html! {
             // Login required
-            <Cabinet />
+            <Cabinet  />
         },
 
-        // If 404
+        
         Route::NotFound => html! { 
+            // If 404
             <Redirect<Route> to={Route::Home} />
         }
     }

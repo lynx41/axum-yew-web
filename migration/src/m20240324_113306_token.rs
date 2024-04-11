@@ -37,6 +37,7 @@ impl MigrationTrait for Migration {
                     .col(
                         ColumnDef::new(Sessions::UniqueId)
                             .string()
+                            .unique_key()
                             .not_null()
                     )
 
@@ -78,7 +79,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Sessions {
+pub enum Sessions {
     Table,
     Id,
     UserId,

@@ -4,9 +4,14 @@ mod validate_input;
 
 use std::{ops::Deref, rc::Rc};
 
-use gloo::{console::log, net::websocket::events, utils::document};
-use wasm_bindgen::{closure::Closure, JsCast};
-use yew::{function_component, html, use_effect, use_effect_with, use_mut_ref, use_state, Callback, Html, MouseEvent, Properties};
+use gloo::{console::log, net::{http::Request, websocket::events}, storage::{LocalStorage, Storage}, utils::document};
+use serde_json::{json, to_value};
+use shared::models::user::User;
+use wasm_bindgen::{closure::Closure, JsCast, JsValue};
+use web_sys::{js_sys::JSON, HtmlInputElement};
+use yew::{function_component, html, platform::spawn_local, use_effect, use_effect_with, use_mut_ref, use_state, Callback, Event, Html, MouseEvent, Properties};
+
+use self::validate_input::{validate_email, validate_password};
 
 
 #[derive(Debug, PartialEq)]
@@ -17,7 +22,7 @@ pub enum AuthTemplate {
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
-    pub onclick: Callback<MouseEvent>, 
+    pub onclick: Callback<MouseEvent>,
 }
 
 #[function_component(ModalWindowAuth)]
@@ -26,6 +31,13 @@ pub fn modal_window_auth(props: &Props) -> Html {
     let is_active = use_mut_ref(|| false);
     let auth_template = use_state(|| AuthTemplate::Login);
     let is_eye_icon_active = use_state(|| false);
+    
+    let email_is_valid = use_state(|| false);
+    let email_handler = use_state(|| String::new());
+
+    let password_is_valid = use_state(|| false);
+    let password_handler = use_state(|| String::new());
+    let password_handler_repeat = use_state(|| String::new());
 
     let on_toggle_password = {
         let is_eye_icon_active = is_eye_icon_active.clone();
@@ -73,7 +85,167 @@ pub fn modal_window_auth(props: &Props) -> Html {
         })
     };
 
+    let email_onchange = {
+        let email_is_valid = email_is_valid.clone();
+        let email_handler = email_handler.clone();
 
+        Callback::from(move |event: Event| {
+            let value = event
+                .target()
+                .unwrap()
+                .unchecked_into::<HtmlInputElement>()
+                .value();
+            
+            if validate_email(&value) {
+                email_is_valid.set(true);
+                email_handler.set(value);
+            } else {
+                email_is_valid.set(false);
+            }
+        })
+    };
+
+    let password_onchange = {
+        let password_is_valid = password_is_valid.clone();
+        let password_handler = password_handler.clone();
+        let auth_template = auth_template.clone();
+        let password_handler_repeat = password_handler_repeat.clone();
+
+        Callback::from(move |event: Event| {
+            let value = event
+                .target()
+                .unwrap()
+                .unchecked_into::<HtmlInputElement>()
+                .value();
+            
+            if validate_password(&value) {
+                if *auth_template.deref() == AuthTemplate::Register {
+                    if value == *password_handler_repeat.deref() {
+                        password_handler.set(value);
+                        password_is_valid.set(true);
+                    }
+                } else {
+                    password_handler.set(value);
+                    password_is_valid.set(true);
+                }
+            } else {
+                password_is_valid.set(false);
+            }
+        })
+    };
+
+    let password_repeat_onchange = {
+        let password_handler_repeat = password_handler_repeat.clone();
+
+        Callback::from(move |event: Event| {
+            let value = event
+                .target()
+                .unwrap()
+                .unchecked_into::<HtmlInputElement>()
+                .value();
+
+            password_handler_repeat.set(value);
+        })
+    };
+
+    let send_btn_onclick = {
+        let email_is_valid = email_is_valid.clone();
+        let password_is_valid = password_is_valid.clone();
+        let auth_template = auth_template.clone();
+
+        let email_handler = email_handler.clone();
+        let password_handler = password_handler.clone();
+
+        Callback::from(move |_| {
+            log!("DO THEY VALID?");
+            if *email_is_valid.deref() && *password_is_valid.deref() {
+                log!("YES THEY ARE");
+                // If inputs are valid, than depending on the AuthTemplate you can send requests
+
+                spawn_local(async move {
+                    
+                    // if a first visit gen a new session
+                    if let Ok(unique_id) = LocalStorage::get::<String>("UniqueID") {
+                        let fetched_response: String = Request::post("https://localhost:5000/validate_unique_session")
+                            .header("UniqueID", &unique_id)
+                            .send()
+                            .await
+                            .unwrap()
+                            .json()
+                            .await
+                            .unwrap();
+
+                    let _ = LocalStorage::set("UniqueID", fetched_response);
+
+                    } else {
+                        let fetched_response: String = Request::get("https://localhost:5000/create_unique_session")
+                            .send()
+                            .await
+                            .unwrap()
+                            .json()
+                            .await
+                            .unwrap();
+
+                        let _ = LocalStorage::set("UniqueID", fetched_response);
+                    }
+                });
+
+
+                let user = User {
+                    email: email_handler.deref().clone(),
+                    password: password_handler.deref().clone(),
+                    unique_id: LocalStorage::get("UniqueID").unwrap(),
+                };
+
+
+                if *auth_template.deref() == AuthTemplate::Login {
+                    // Call the login API
+                    spawn_local(async move {
+                        
+                        let fetched_response = Request::post("https:/localhost:5000/login")
+                            .json(&user)
+                            .unwrap()
+                            .send()
+                            .await
+                            .unwrap()
+                            .json::<String>()
+                            .await;
+                        
+                        match fetched_response {
+                            Ok(token) => {
+                                log!("1_ok!!!!");
+                                let _ = LocalStorage::set("Token", token);
+                            },
+                            Err(_) => { log!("1_ERRR") }
+                        }
+                    })
+
+                } else {
+                    // Call the Register API
+                    spawn_local(async move {
+                        
+                        let fetched_response = Request::post("https:/localhost:5000/register")
+                            .json(&user)
+                            .unwrap()
+                            .send()
+                            .await
+                            .unwrap()
+                            .json::<String>()
+                            .await;
+                        
+                        match fetched_response {
+                            Ok(token) => {
+                                log!("2_ok1!!!!");
+                                let _ = LocalStorage::set("Token", token);
+                            },
+                            Err(_) => { log!("2_ERRR") }
+                        }
+                    })
+
+                }
+            }
+        })
+    };
 
     html! {
 
@@ -108,13 +280,13 @@ pub fn modal_window_auth(props: &Props) -> Html {
 
                             <div class="email">
                                 <label class="form__label" for="email">{"Ел. пошта"}</label>
-                                <input id="email" class="email__input" type="text" _size_medium="" />
+                                <input id="email" class="email__input" type="text" _size_medium="" onchange={email_onchange} />
                             </div>
 
                             <div class="password">
                                 <label class="form__label" for="password">{"Пароль"}</label>
                                 <div class="form__row_with_button">
-                                    <input id="password" class="password__input" type={ if *is_eye_icon_active.deref() { "text" } else { "password" } } _size_medium="" />
+                                    <input id="password" class="password__input" type={ if *is_eye_icon_active.deref() { "text" } else { "password" } } _size_medium="" onchange={password_onchange} />
                                     <button class="button_type_link form__toggle-password" type="button" aria-hidden="true" onclick={on_toggle_password}>
                                         if {*is_eye_icon_active.deref()} {
                                             <svg width="24" height="24" aria-hidden="true">
@@ -144,7 +316,7 @@ pub fn modal_window_auth(props: &Props) -> Html {
                                 <div class="password_repeat">
                                     <label class="form__label" for="password">{"Повторіть пароль"}</label>
                                     <div class="form__row_with_button">
-                                        <input id="password_repeat" class="password__input" type={ if *is_eye_icon_active.deref() { "text" } else { "password" } } _size_medium="" />
+                                        <input id="password_repeat" class="password__input" type={ if *is_eye_icon_active.deref() { "text" } else { "password" } } _size_medium="" onchange={password_repeat_onchange} />
                                     </div>
                                 </div>
                             } else {
@@ -153,11 +325,11 @@ pub fn modal_window_auth(props: &Props) -> Html {
 
                             <div class="indentation__bottom"></div>
 
-                            <button class="button button--medium button--green submit-button submit-button_bottom" type="submit">{"Продовжити"}</button>
+                            <button class="button button--medium button--green submit-button submit-button_bottom" type="submit" onclick={send_btn_onclick}>{"Продовжити"}</button>
                     
                             
                     
-                            <button class="button button--medium button--link link-button link-button__bottom" onclick={switch_template}>{
+                            <button class="button button--medium button--link link-button link-button__bottom" onclick={switch_template} >{
                                 if {*auth_template.deref() == AuthTemplate::Register} { "Авторизуватися" } else { "Зареєструватися" }
                             }</button>
 

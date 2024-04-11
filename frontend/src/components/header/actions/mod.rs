@@ -16,12 +16,12 @@ use user::User;
 
 use yew::{function_component, html, use_effect_with, use_mut_ref, use_state, Callback, Html, MouseEvent};
 
-use crate::components::props::{HeaderProps, IsAuth};
+use crate::components::props::{HeaderActions, IsAuth};
 
 
 
 #[function_component(Actions)]
-pub fn actions(props: &HeaderProps) -> Html {
+pub fn actions(props: &HeaderActions) -> Html {
 
     let user_onclick = props.user_btn_onclick.clone();
     let user_btn_onclick = Callback::from(move |e: MouseEvent| {

@@ -5,7 +5,6 @@ use yew::{Callback, MouseEvent, Properties};
 pub struct HeaderProps {
     pub selected_language: String,
     pub supported_languages: Vec<&'static str>,
-    pub user_btn_onclick: Callback<MouseEvent>,
     pub is_auth: IsAuth,
 }
 
@@ -13,6 +12,14 @@ pub struct HeaderProps {
 pub struct FooterProps {
     pub selected_language: String,
     pub supported_languages: Vec<&'static str>,
+}
+
+#[derive(Properties, PartialEq)]
+pub struct HeaderActions {
+    pub selected_language: String,
+    pub supported_languages: Vec<&'static str>,
+    pub user_btn_onclick: Callback<MouseEvent>,
+    pub is_auth: IsAuth,
 }
 
 #[derive(Properties, PartialEq)]

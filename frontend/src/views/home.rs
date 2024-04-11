@@ -1,5 +1,4 @@
 use std::ops::Deref;
-use std::rc::Rc;
 
 use crate::components::{
     header::Header,
@@ -10,19 +9,12 @@ use crate::stores::language::{get_selected_langauge, get_supported_languages};
 use crate::components::props::IsAuth;
 
 
-use gloo::console::log;
 use gloo::net::http::Request;
 use gloo::storage::{LocalStorage, Storage};
-use gloo::utils::document;
-use wasm_bindgen::closure::Closure;
-use wasm_bindgen::JsCast;
-use web_sys::Element;
 use yew::platform::spawn_local;
-use yew::{hook, use_effect_with, use_state, Callback, HtmlResult, MouseEvent};
+use yew::{use_effect_with, use_state};
 use yew::{function_component, html,Html};
-use yew::suspense::{Suspense, SuspensionResult};
 
-use crate::components::modal_windows::modal_auth::ModalWindowAuth;
 
 #[function_component(Home)]
 pub fn home() -> Html {
@@ -67,52 +59,42 @@ pub fn home() -> Html {
         }
     );
 
-    // Check if user clicked on the 'User' button to auth
-    let modal_auth_display = use_state(|| false);
+    // making a unique_session_ID
+    use_effect_with(
+        (),
+        {
+            move |()| {
+                spawn_local(async move {
+                    
+                    // if a first visit gen a new session
+                    if let Ok(unique_id) = LocalStorage::get::<String>("UniqueID") {
+                        let fetched_response: String = Request::post("https://localhost:5000/validate_unique_session")
+                            .header("UniqueID", &unique_id)
+                            .send()
+                            .await
+                            .unwrap()
+                            .json()
+                            .await
+                            .unwrap();
 
-    let user_btn_onclick = {
-        let modal_auth_display = modal_auth_display.clone();
-        Callback::from(move |e: MouseEvent| {
-            e.stop_propagation();
-            modal_auth_display.set(true);
-        })
-    };
+                    let _ = LocalStorage::set("UniqueID", fetched_response);
 
-    // If the user wants to close the modal auth window by icon
-    let close_modal_auth = {
-        let modal_auth_display = modal_auth_display.clone();
-        Callback::from(move |_| {
-            modal_auth_display.set(false);
-        })
-    };
+                    } else {
+                        let fetched_response: String = Request::get("https://localhost:5000/create_unique_session")
+                            .send()
+                            .await
+                            .unwrap()
+                            .json()
+                            .await
+                            .unwrap();
 
-    // // Close the auth modal windows on click outside the modal
-
-    // {
-    //     let modal_auth_display = modal_auth_display.clone();
-    //     let close = Rc::new(Closure::<dyn Fn()>::new({
-    //         move || {
-    //             // modal_auth_display.set(false);
-    //             log!("TRUE");
-    //         }
-    //     }));
-
-    //     use_effect_with((),
-    //         move |_| {
-    //             // let body = document().body().unwrap();
-    //             let body = document().
-                
-    //             body.add_event_listener_with_callback("click", (*close).as_ref().unchecked_ref())
-    //                 .unwrap();
-    //             let close_close = close.clone();
-    //             move || {
-    //                 body.remove_event_listener_with_callback("click", (*close_close).as_ref().unchecked_ref())
-    //                     .unwrap();
-    //             }
-    //         }
-    //     );
-    // }
-
+                        let _ = LocalStorage::set("UniqueID", fetched_response);
+                    }
+                });
+            }
+        }
+    );
+    
 
 
     html! {
@@ -121,13 +103,10 @@ pub fn home() -> Html {
         <Header
             selected_language={selected_language.clone()}
             supported_languages={supported_languages.clone()}
-            user_btn_onclick={user_btn_onclick.clone()}
             is_auth={is_auth.deref().clone()}
         />
         
-        if *modal_auth_display.deref() {
-            <ModalWindowAuth onclick={close_modal_auth.clone()} />
-        }
+
 
         <div>
             <p>{"HOME PAGE"}</p>
