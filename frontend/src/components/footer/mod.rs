@@ -3,6 +3,9 @@ mod inner_bot;
 mod mobile_apps_ad;
 mod bottom;
 
+use std::ops::Deref;
+use std::rc::Rc;
+
 use crate::components::props::FooterProps;
 use crate::components::footer::{
     inner_top::InnerTop,
@@ -12,13 +15,17 @@ use crate::components::footer::{
 };
 
 use crate::components::locales::footer_loc;
+use crate::components::utils::client_context::ClientContext;
 
-use yew::{function_component, html, Html};
+use yew::{function_component, html, use_context, Html};
 use yew_i18n::{use_translation, I18nProvider};
 
 
 #[function_component(Footer)]
-pub fn footer(props: &FooterProps) -> Html {
+// pub fn footer(props: &FooterProps) -> Html {
+pub fn footer() -> Html {
+    
+    let client_context = use_context::<Rc<ClientContext>>().unwrap();
 
     let mobile_apps_ad_loc = footer_loc::mobile_apps_ad();
     // Footer TOP 
@@ -33,8 +40,8 @@ pub fn footer(props: &FooterProps) -> Html {
         
             <div class="footer-wrapper">
 
-                <I18nProvider supported_languages={props.supported_languages.clone()} translations={mobile_apps_ad_loc}>
-                    <MobileAppsAd selected_language={props.selected_language.clone()} />
+                <I18nProvider supported_languages={client_context.supported_languages.clone()} translations={mobile_apps_ad_loc}>
+                    <MobileAppsAd selected_language={client_context.selected_language.deref().clone()} />
                 </I18nProvider>
                 
                 <footer class="footer">
@@ -44,13 +51,13 @@ pub fn footer(props: &FooterProps) -> Html {
                         // Footer top
                         <div class="footer-top">
 
-                            <I18nProvider supported_languages={props.supported_languages.clone()} translations={inner_top_translations}>
-                                    <InnerTop selected_language={props.selected_language.clone()} />
+                            <I18nProvider supported_languages={client_context.supported_languages.clone()} translations={inner_top_translations}>
+                                    <InnerTop selected_language={client_context.selected_language.deref().clone()} />
                             </I18nProvider>
                             
 
-                            <I18nProvider supported_languages={props.supported_languages.clone()} translations={inner_bot_translations}>
-                                    <InnerBot selected_language={props.selected_language.clone()} />
+                            <I18nProvider supported_languages={client_context.supported_languages.clone()} translations={inner_bot_translations}>
+                                    <InnerBot selected_language={client_context.selected_language.deref().clone()} />
                             </I18nProvider>
 
                         </div>
@@ -58,8 +65,8 @@ pub fn footer(props: &FooterProps) -> Html {
                         // Footer bot
                         <div class="footer-bottom">
                         
-                            <I18nProvider supported_languages={props.supported_languages.clone()} translations={bot_translations}>
-                                <Bottom selected_language={props.selected_language.clone()} />
+                            <I18nProvider supported_languages={client_context.supported_languages.clone()} translations={bot_translations}>
+                                <Bottom selected_language={client_context.selected_language.deref().clone()} />
                             </I18nProvider>
 
                         </div>

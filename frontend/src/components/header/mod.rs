@@ -6,17 +6,20 @@ pub mod search_bar;
 pub mod actions;
 
 use std::ops::Deref;
+use std::rc::Rc;
 
-use yew::{function_component, html, use_state, Callback, Html, MouseEvent};
+use yew::{function_component, html, use_context, use_state, Callback, Html, MouseEvent};
 
 use crate::components::props::HeaderProps;
 
 use crate::components::modal_windows::modal_auth::ModalWindowAuth;
+use crate::components::utils::client_context::ClientContext;
 
 #[function_component(Header)]
-pub fn header(props: &HeaderProps) -> Html {
+// pub fn header(props: &HeaderProps) -> Html {
+pub fn header() -> Html {
 
-    
+    // let client_context = use_context::<Rc<ClientContext>>().unwrap();
 
 
     // Check if user clicked on the 'User' button to auth
@@ -57,13 +60,17 @@ pub fn header(props: &HeaderProps) -> Html {
                     <search_bar::SearchBar />
 
                     // header actions
-                    <actions::Actions
-                        selected_language={props.selected_language.clone()}
-                        supported_languages={props.supported_languages.clone()}
-                        user_btn_onclick={user_btn_onclick.clone()}
-                        is_auth={props.is_auth.clone()}
-                    />
+                    // <actions::Actions
+                    //     selected_language={props.selected_language.clone()}
+                    //     supported_languages={props.supported_languages.clone()}
+                    //     user_btn_onclick={user_btn_onclick.clone()}
+                    //     is_auth={props.is_auth.clone()}
+                    // />
                     
+                    <actions::Actions
+                        user_btn_onclick={user_btn_onclick.clone()}
+                    />
+
                 </div>
             </div>
         </header>

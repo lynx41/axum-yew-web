@@ -1,10 +1,16 @@
 use axum::{Json, extract::State};
+use chrono::{DateTime, Datelike, FixedOffset, TimeZone, Timelike, Utc};
+use chrono_tz::Tz;
 use sea_orm::{ActiveModelBehavior, ActiveModelTrait, ColumnTrait, DatabaseConnection, EntityTrait, IntoActiveModel, QueryFilter, Set};
 use serde::{Deserialize, Serialize};
+use tower_http::follow_redirect::policy::PolicyExt;
+use tracing::field::debug;
 
 use crate::{
     database::users::{self, Model, Entity as UserTable},
     database::sessions::{self, Entity as Sessions},
+    database::user_logs,
+    database::user_roles,
     utils::{app_error::AppError, jwt::{self, create_token}}
 };
 
@@ -16,6 +22,13 @@ pub async fn login(
     Json(request_user): Json<User>
 ) -> Result<Json<String>, AppError> {
 
+/*
+    We have an account, we only need to generate token and update last_login inside the user_logs.
+    1. Validate request data
+    2. update the user_info table
+    3. make a session and submit the token as a response
+*/
+
     // Check if database has the email
     let db_user = UserTable::find()
         .filter(users::Column::Email.eq(&request_user.email))
@@ -24,9 +37,12 @@ pub async fn login(
         .map_err(|_| AppError::new(
             StatusCode::INTERNAL_SERVER_ERROR, 
             "Internal Server Error"))?;
-
+    
+    // if we have such email in the database
     return if let Some(db_user) = db_user {
-        // if password is wrong -> error
+        debug("Hoi");
+        
+        // validate the password
         if !verify_password(request_user.password, &db_user.password)? {            
             return Err(AppError::new(
                 StatusCode::INTERNAL_SERVER_ERROR,
@@ -37,19 +53,26 @@ pub async fn login(
         let jwt = create_token()?;
 
         // Rewrite expired session or crete a new one
+
+        /*
+            We are trying to find some existed session with the request unique_id so we can update the session.
+            But if that's the first login on the browser we just create a new one, and in either way we
+            add to the session the user_id. And we update the last_login in user_logs
+        */
+
         let db_session = Sessions::find()
-            .filter(sessions::Column::UserId.eq(db_user.id))
             .filter(sessions::Column::UniqueId.eq(&request_user.unique_id))
             .one(&database)
             .await
             .map_err(|_| AppError::new(
                 StatusCode::INTERNAL_SERVER_ERROR,
-                "Internal Server Error"))?;
+                "Internal server error"))?;
 
         if let Some(db_session) = db_session {
             let mut session_update = db_session.into_active_model();
             
             session_update.token = Set(Some(jwt.clone()));
+            session_update.user_id = Set(Some(db_user.id));
 
             let _ = session_update.save(&database)
                 .await
@@ -57,6 +80,7 @@ pub async fn login(
                     StatusCode::INTERNAL_SERVER_ERROR,
                     "Internal Server Error"
                 ))?;
+
         } else {
             let new_session = sessions::ActiveModel {
                 user_id: Set(Some(db_user.id)),
@@ -65,7 +89,6 @@ pub async fn login(
                 ..Default::default()
             };
 
-            // Try to save
             let _ = new_session.save(&database)
                 .await
                 .map_err(|_| AppError::new(
@@ -87,6 +110,18 @@ pub async fn register(
     Json(req_user): Json<User>
 ) -> Result<Json<String>, AppError> {
     
+    /*
+        We wamt to create a bran new account.
+        0. After frontend the request data is normilizid
+        1. Validate the request data 
+        2. Crete an user
+        3. Create a new record in the user_logs
+        4. Create a new record in the user_roles
+        5. make a session and sumbit the token as a response
+    */
+
+    log::debug!("ENTRY");
+
     // Check if the database has the email
     let db_user = UserTable::find()
         .filter(users::Column::Email.eq(&req_user.email))
@@ -96,14 +131,18 @@ pub async fn register(
             StatusCode::INTERNAL_SERVER_ERROR,
             "Internal Server Error"))?;
     
+    log::debug!("LAUNCHED EMAIL SEARCH");
+
     if db_user.is_some() {
+        log::debug!("EMAIL ALREADY EXIST IN THE DATABASE");
+        
         return Err(AppError::new(
             StatusCode::INTERNAL_SERVER_ERROR,
              "Internal Server Error"));
     } else {
         // if user is real and password is correct
         let jwt = create_token()?;
-
+        log::debug!("NO SUCH EMAIL WAS FOUND");
         // Create the user
         let new_user = users::ActiveModel {
             email: Set(req_user.email),
@@ -116,11 +155,51 @@ pub async fn register(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Internal Server Error"))?;
 
+        log::debug!("NEW USER WAS SAVED TO THE DATABASE");
+
+        let new_user_id = new_user_result.id.unwrap();
+
+        // Create a record in user_logs
+        let utc = Utc::now();
+        let dtwtz = FixedOffset::east(0)
+            .with_ymd_and_hms(utc.year(), utc.month(), utc.day(), utc.hour(), utc.minute(), utc.second())
+            .unwrap();
+
+        let new_user_logs = user_logs::ActiveModel {
+            user_id: Set(new_user_id),
+            created_at: Set(dtwtz),
+            last_login: Set(dtwtz),
+            modified_at: Set(dtwtz),
+            ..Default::default()
+        };
+
+        let new_user_logs_result = new_user_logs.save(&database).await
+            .map_err(|_| AppError::new(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "Internal Server Error"))?;
+
+        log::debug!("NEW USER_LOGS WAS SAVED TO THE DATABASE");
+
+        // Create a record in user_roles
+        let new_user_roles = user_roles::ActiveModel {
+            // role_id 1 mean => customer
+            role_id: Set(1),
+            user_id: Set(new_user_id),
+            ..Default::default()
+        };
+
+        let new_user_roles_result = new_user_roles.save(&database).await
+            .map_err(|_| AppError::new(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "Internal Server Error"))?;
+
+        log::debug!("NEW USER_ROLES WAS SAVED TO THE DATABASE");
+
         // Create the session
         let new_session = sessions::ActiveModel {
             token: Set(Some(jwt.clone())),
             unique_id: Set(req_user.unique_id),
-            user_id: Set(Some(new_user_result.id.unwrap())),
+            user_id: Set(Some(new_user_id)),
             ..Default::default()
         };
 
@@ -128,6 +207,8 @@ pub async fn register(
             .map_err(|_| AppError::new(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Internal Server Error"))?;
+
+        log::debug!("NEW SESSION WAS SAVED TO THE DATABASE");
 
         Ok(Json(jwt))
     }

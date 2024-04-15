@@ -1,6 +1,6 @@
 use sea_orm_migration::prelude::*;
 
-use crate::m20220101_000001_users_roles::Users;
+use crate::m20220101_000001_users_roles::{Users, Guest};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -26,18 +26,21 @@ impl MigrationTrait for Migration {
                     .col(
                         ColumnDef::new(Sessions::UserId)
                             .integer()
-                            .not_null()
                     )
-
+                    
                     .col(
                         ColumnDef::new(Sessions::Token)
                             .string()
                     )
 
                     .col(
+                        ColumnDef::new(Sessions::GuestId)
+                            .integer()
+                    )
+
+                    .col(
                         ColumnDef::new(Sessions::UniqueId)
                             .string()
-                            .unique_key()
                             .not_null()
                     )
 
@@ -53,6 +56,17 @@ impl MigrationTrait for Migration {
                     .name("fk-sessions-user-id")
                     .from(Sessions::Table, Sessions::UserId)
                     .to(Users::Table, Users::Id)
+                    .on_delete(ForeignKeyAction::Cascade)
+                    .to_owned()
+            )
+                .await?;
+        
+        manager
+            .create_foreign_key(
+                ForeignKey::create()
+                    .name("fk-sessions-guest-id")
+                    .from(Sessions::Table, Sessions::GuestId)
+                    .to(Guest::Table, Guest::Id)
                     .on_delete(ForeignKeyAction::Cascade)
                     .to_owned()
             )
@@ -73,6 +87,15 @@ impl MigrationTrait for Migration {
                 .await?;
 
         manager
+            .drop_foreign_key(
+                ForeignKey::drop()
+                    .table(Sessions::Table)
+                    .name("fk-sessions-guest-id")
+                    .to_owned()
+            )
+                .await?;
+
+        manager
             .drop_table(Table::drop().table(Sessions::Table).to_owned())
             .await
     }
@@ -83,6 +106,7 @@ pub enum Sessions {
     Table,
     Id,
     UserId,
+    GuestId,
     Token,
     UniqueId
 }

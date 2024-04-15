@@ -1,0 +1,25 @@
+use std::{ops::Deref, rc::Rc};
+
+use yew::{function_component, html, use_context, BaseComponent, Html};
+use yew_router::prelude::use_navigator;
+
+use crate::{components::{props::IsAuth, utils::client_context::ClientContext}, routes::Route};
+
+#[function_component(AuthGuard)]
+pub fn auth_guard<T>(props: &<T as yew::BaseComponent>::Properties) -> Html
+where
+    T: BaseComponent,
+    <T as yew::BaseComponent>::Properties: Clone,
+{
+
+    let client_context = use_context::<Rc<ClientContext>>().expect("No app context");
+    let navigator = use_navigator().unwrap();
+
+
+    if *client_context.is_auth.deref() != IsAuth::No {
+        html! { <T ..props.clone() /> }
+    } else {
+        navigator.replace(&Route::Home);
+        html! {<></>}
+    }
+}

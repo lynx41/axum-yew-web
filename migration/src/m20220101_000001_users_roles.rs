@@ -97,7 +97,31 @@ impl MigrationTrait for Migration {
 
             )
                 .await?;
+        
+        manager
+            .create_table(
+                Table::create()
+                    .table(Guest::Table)
+                    .if_not_exists()
 
+                    .col(
+                        ColumnDef::new(Guest::Id)
+                            .integer()
+                            .not_null()
+                            .auto_increment()
+                            .primary_key()
+                    )
+
+                    .col(
+                        ColumnDef::new(Guest::UniqueId)
+                            .integer()
+                            .not_null()
+                            .unique_key()
+                    )
+
+                    .to_owned()
+            )
+                .await?;
         
         // Defining FOREIGN_KEYS
         manager.create_foreign_key(
@@ -105,7 +129,7 @@ impl MigrationTrait for Migration {
                 .name("fk-userroles-user-id")
                 .from(UserRoles::Table, UserRoles::UserId)
                 .to(Users::Table, Users::Id)
-                .on_delete(ForeignKeyAction::SetNull)
+                .on_delete(ForeignKeyAction::Cascade)
                 .to_owned()
         )
             .await?;
@@ -115,7 +139,7 @@ impl MigrationTrait for Migration {
                 .name("fk-userroles-role-id")
                 .from(UserRoles::Table, UserRoles::RoleId)
                 .to(Roles::Table, Roles::Id)
-                .on_delete(ForeignKeyAction::SetNull)
+                .on_delete(ForeignKeyAction::Cascade)
                 .to_owned()
         )
             .await?;
@@ -234,4 +258,11 @@ enum Roles {
     Table,
     Id,
     RoleName
+}
+
+#[derive(DeriveIden)]
+pub enum Guest {
+    Table,
+    Id,
+    UniqueId
 }

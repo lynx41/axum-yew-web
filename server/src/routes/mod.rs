@@ -21,7 +21,7 @@ pub async fn routes(state: State) -> Router {
     Router::new()
 
         // auth needed
-        .route("/profile", get(profile))
+        .route("/cabinet", get(profile))
         .route("/verify_token", get(verify_token))
         .route_layer(middleware::from_fn_with_state(state.clone(), guard))
 

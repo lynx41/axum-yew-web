@@ -1,5 +1,5 @@
 use crate::views::{
-    cabinet::Cabinet, home::Home
+    cabinet::Cabinet, home::Home, auth_guard::AuthGuard
 };
 
 use yew::{html, Html};
@@ -25,11 +25,14 @@ pub fn switch(route: Route) -> Html {
         Route::Home => html! {
             // Free access
             <Home />
+                // <Home /> 
+            // </Page>
+            // <Home />
         },
 
         Route::Cabinet => html! {
             // Login required
-            <Cabinet  />
+            <AuthGuard <Cabinet> />
         },
 
         

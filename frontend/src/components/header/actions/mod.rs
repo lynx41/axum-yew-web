@@ -5,7 +5,7 @@ mod cart;
 mod user;
 
 
-use std::{borrow::BorrowMut, ops::Deref};
+use std::{borrow::BorrowMut, ops::Deref, rc::Rc};
 
 use gloo::{net::http::Request, storage::{LocalStorage, Storage}, console::log};
 use language::Languages;
@@ -14,14 +14,21 @@ use notifications::Notifications;
 use cart::Cart;
 use user::User;
 
-use yew::{function_component, html, use_effect_with, use_mut_ref, use_state, Callback, Html, MouseEvent};
+use yew::{function_component, html, use_context, use_effect_with, use_mut_ref, use_state, Callback, Html, MouseEvent, Properties};
 
-use crate::components::props::{HeaderActions, IsAuth};
+use crate::components::{props::{HeaderActions, IsAuth}, utils::client_context::ClientContext};
 
+#[derive(Properties, PartialEq)]
+pub struct Props {
+    pub user_btn_onclick: Callback<MouseEvent>
+}
 
 
 #[function_component(Actions)]
-pub fn actions(props: &HeaderActions) -> Html {
+// pub fn actions(props: &HeaderActions) -> Html {
+pub fn actions(props: &Props) -> Html {
+
+    let client_context = use_context::<Rc<ClientContext>>().unwrap();
 
     let user_onclick = props.user_btn_onclick.clone();
     let user_btn_onclick = Callback::from(move |e: MouseEvent| {
@@ -42,7 +49,7 @@ pub fn actions(props: &HeaderActions) -> Html {
 
 
         // can be viewed only by GUESTS
-        if {props.is_auth == IsAuth::No} {
+        if {*client_context.is_auth.deref() == IsAuth::No} {
             <User onclick={props.user_btn_onclick.clone()} />
         }
 
@@ -54,13 +61,13 @@ pub fn actions(props: &HeaderActions) -> Html {
 
         // redirects to special page of all user's orders
         // visible only for AUTHORIZED
-        if {props.is_auth == IsAuth::Yes} {
+        if {*client_context.is_auth.deref() == IsAuth::Yes} {
             <Orders />
         }
 
 
         // visible only for AUTHORIZED
-        if {props.is_auth == IsAuth::Yes} {
+        if {*client_context.is_auth.deref() == IsAuth::Yes} {
             <Notifications />
         }
 

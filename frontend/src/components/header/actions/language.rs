@@ -1,27 +1,26 @@
-use crate::{routes::Route, stores::language::LangSelector};
+// use crate::{routes::Route, stores::language::LangSelector};
+
+use std::{ops::Deref, rc::Rc};
 
 use gloo::storage::{LocalStorage, Storage};
 use strum::IntoEnumIterator;
 use web_sys::MouseEvent;
-use yew::{function_component, html, html_nested, Callback, Html, Properties};
+use yew::{function_component, html, html_nested, use_context, Callback, Html, Properties};
 use yew_router::hooks::use_navigator;
 
 
 // list of languages can be changed in /src/stores/language.rs
-pub const LANGUAGE_KEY: &str = "Language";
+use crate::{components::utils::client_context::ClientContext, routes::Route, stores::language::{get_selected_langauge, DEFAULT_LANGUAGE, get_supported_languages, LANGUAGE_KEY}};
 
 
 #[function_component(Languages)]
 pub fn languages() -> Html {
     
-    // On Load locales must be set (if not exists)
-    let current_lang = match LocalStorage::get::<LangSelector>(LANGUAGE_KEY) {
-        Err(_) => {
-            let _ = LocalStorage::set(LANGUAGE_KEY, LangSelector::default());
-            LangSelector::default()
-        },
-        Ok(lang) => lang
-    };
+    let client_context = use_context::<Rc<ClientContext>>().unwrap();
+
+    // let selected_language = get_selected_langauge();
+    // let languages_lst = get_supported_languages();
+
     
     html! {
         <li class="header-actions__item header-actions__item--language">
@@ -30,12 +29,11 @@ pub fn languages() -> Html {
                 <ul class="lang lang-header">
 
                     {
-                        LangSelector::iter().map(|language| {
-                            // map body
+                        client_context.supported_languages.iter().map(|language| {
                             html_nested!{
                                 <LangItem
-                                object_language={language}
-                                current_language={current_lang.clone()} />
+                                object_language={language.clone()}
+                                current_language={client_context.selected_language.deref().clone()} />
                             }
                         }).collect::<Html>()
                     }
@@ -49,23 +47,32 @@ pub fn languages() -> Html {
 
 #[derive(Properties, PartialEq, Debug, Clone)]
 pub struct LangItemProps {
-    pub object_language: LangSelector,
-    pub current_language: LangSelector,
+    pub object_language: String,
+    pub current_language: String,
 }
 
 
 #[function_component(LangItem)]
 pub fn lang_item(props: &LangItemProps) -> Html {
-    let navigator = use_navigator().unwrap();
+    // let navigator = use_navigator().unwrap();
     let lang = props.object_language.clone();
+    let client_context = use_context::<Rc<ClientContext>>().unwrap();
 
-    let onclick = Callback::from(move |_: MouseEvent| {
+    let onclick = {
         let lang = lang.clone();
-        let navigator = navigator.clone();
+        let client_context = client_context.clone();
+        // let navigator = navigator.clone();
 
-        let _ = LocalStorage::set(LANGUAGE_KEY, lang);
-        navigator.push(&Route::NotFound);
-    });
+        Callback::from(move |_: MouseEvent| {
+            let lang = lang.clone();
+            let client_context = client_context.clone();
+
+            let _ = LocalStorage::set(LANGUAGE_KEY, &lang);
+            client_context.selected_language.set(lang);
+    
+            // navigator.push(&Route::NotFound);
+        })
+    };
 
     if props.object_language == props.current_language {
         html! {

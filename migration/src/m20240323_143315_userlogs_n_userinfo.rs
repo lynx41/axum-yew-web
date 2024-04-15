@@ -51,7 +51,7 @@ impl MigrationTrait for Migration {
 
                     .col(
                         ColumnDef::new(UserLogs::DeletedAt)
-                            .timestamp_with_time_zone()   
+                            .timestamp_with_time_zone() 
                     )
 
                     .to_owned()
@@ -104,7 +104,7 @@ impl MigrationTrait for Migration {
                 .name("fk-userlogs-user-id")
                 .from(UserLogs::Table, UserLogs::UserId)
                 .to(Users::Table, Users::Id)
-                .on_delete(ForeignKeyAction::SetNull)
+                .on_delete(ForeignKeyAction::Cascade)
                 .to_owned()
         )
             .await?;
@@ -114,7 +114,7 @@ impl MigrationTrait for Migration {
                 .name("fk-userinfo-user-id")
                 .from(UserInfo::Table, UserInfo::UserId)
                 .to(Users::Table, Users::Id)
-                .on_delete(ForeignKeyAction::SetNull)
+                .on_delete(ForeignKeyAction::Cascade)
                 .to_owned()
         )
             .await?;

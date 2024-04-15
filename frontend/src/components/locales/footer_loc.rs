@@ -2,19 +2,21 @@ use std::collections::HashMap;
 
 use serde_json::Value;
 
-use crate::stores::language::LangSelector;
+// use crate::stores::language::LangSelector;
+
+use crate::stores::language::{LANG_ENG, LANG_UA};
 
 pub fn inner_top_loc() -> HashMap<String, Value> {
 
     HashMap::from([
         (
-            LangSelector::ENG.to_string(),
+            LANG_ENG.to_owned(),
             serde_json::json!({
                 "title": "Call center working hours"
             })
         ),
         (
-            LangSelector::UA.to_string(),
+            LANG_UA.to_owned(),
             serde_json::json!({
                 "title": "Графік роботи Call-центра"
             })
@@ -25,7 +27,7 @@ pub fn inner_top_loc() -> HashMap<String, Value> {
 pub fn inner_bot_loc() -> HashMap<String, Value> {
     HashMap::from([
         (
-            LangSelector::ENG.to_string(),
+            LANG_ENG.to_owned(),
             serde_json::json!({
                 "Information about the company": "Information about the company",
                 "About us": "About us",
@@ -52,7 +54,7 @@ pub fn inner_bot_loc() -> HashMap<String, Value> {
             })
         ),
         (
-            LangSelector::UA.to_string(),
+            LANG_UA.to_owned(),
             serde_json::json!({
                 "Information about the company": "Інформація про компанію",
                 "About us": "Про нас",
@@ -84,7 +86,7 @@ pub fn inner_bot_loc() -> HashMap<String, Value> {
 pub fn mobile_apps_ad() -> HashMap<String, Value> {
     HashMap::from([
         (
-            LangSelector::UA.to_string(),
+            LANG_UA.to_owned(),
             serde_json::json!({
             "Download our apps": "Завантажуй наші застосунки",
             "GooglePlayIconUrl": "https://localhost:5000/public/system/images/locales/footer/google-play-badge-ua.svg",
@@ -94,7 +96,7 @@ pub fn mobile_apps_ad() -> HashMap<String, Value> {
             })
         ),
         (
-            LangSelector::ENG.to_string(),
+            LANG_ENG.to_owned(),
             serde_json::json!({
                 "Download our apps": "Download our apps",
                 "GooglePlayIconUrl": "https://localhost:5000/public/system/images/locales/footer/google-play-badge-en.svg",
@@ -109,17 +111,17 @@ pub fn mobile_apps_ad() -> HashMap<String, Value> {
 pub fn bottom_loc() -> HashMap<String, Value> {
     HashMap::from([
         (
-            LangSelector::UA.to_string(),
+            LANG_UA.to_owned(),
             serde_json::json!({
-                "Copyright": " © 2024 Інтернет-магазин «Білоба™» — Роздрібна торгівля ",
-                "TM": " ТМ используется на основании лицензии правообладателя BilobaLTD "
+                "Copyright": " © 2024 Інтернет-магазин «HSLV™» — Роздрібна торгівля ",
+                "TM": " ТМ используется на основании лицензии правообладателя HSLVLTD "
             })
         ),
         (
-            LangSelector::ENG.to_string(),
+            LANG_ENG.to_owned(),
             serde_json::json!({
-                "Copyright": " © 2024 Biloba™ Online Store - Retail Sales ",
-                "TM": " TM is used under the license of the right holder BilobaLTD "
+                "Copyright": " © 2024 HSLV™ Online Store - Retail Sales ",
+                "TM": " TM is used under the license of the right holder HSLVLTD "
             })
         )
     ])

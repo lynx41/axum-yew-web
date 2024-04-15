@@ -9,7 +9,10 @@ use serde_json::{json, to_value};
 use shared::models::user::User;
 use wasm_bindgen::{closure::Closure, JsCast, JsValue};
 use web_sys::{js_sys::JSON, HtmlInputElement};
-use yew::{function_component, html, platform::spawn_local, use_effect, use_effect_with, use_mut_ref, use_state, Callback, Event, Html, MouseEvent, Properties};
+use yew::{function_component, html, platform::spawn_local, use_context, use_effect, use_effect_with, use_mut_ref, use_state, Callback, Event, Html, MouseEvent, Properties};
+use yew_router::hooks::use_navigator;
+
+use crate::{components::{props::IsAuth, utils::client_context::ClientContext}, routes::Route};
 
 use self::validate_input::{validate_email, validate_password};
 
@@ -27,6 +30,10 @@ pub struct Props {
 
 #[function_component(ModalWindowAuth)]
 pub fn modal_window_auth(props: &Props) -> Html {
+
+    let client_context = use_context::<Rc<ClientContext>>().unwrap().clone();
+
+    let navigator = use_navigator().unwrap();
 
     let is_active = use_mut_ref(|| false);
     let auth_template = use_state(|| AuthTemplate::Login);
@@ -59,11 +66,13 @@ pub fn modal_window_auth(props: &Props) -> Html {
 
     // if the user wants to close the auth modal
     let onclick = props.onclick.clone();
-    let onclick_handler_close = Callback::from(move |e: MouseEvent| {
-        onclick.emit(e);
-    });
-
-
+    let onclick_handler_close = {
+        let onclick = onclick.clone();
+        Callback::from(move |e: MouseEvent| {
+            onclick.emit(e);
+        })
+    };
+    
     // if user clicks on auth form everything if fine
     let is_active_onclick = {
         let is_active = is_active.clone();
@@ -149,6 +158,10 @@ pub fn modal_window_auth(props: &Props) -> Html {
     };
 
     let send_btn_onclick = {
+        let navigator = navigator.clone();
+        let onclick = onclick.clone();
+        let client_context = client_context.clone();
+        
         let email_is_valid = email_is_valid.clone();
         let password_is_valid = password_is_valid.clone();
         let auth_template = auth_template.clone();
@@ -156,14 +169,17 @@ pub fn modal_window_auth(props: &Props) -> Html {
         let email_handler = email_handler.clone();
         let password_handler = password_handler.clone();
 
-        Callback::from(move |_| {
-            log!("DO THEY VALID?");
+        Callback::from(move |e: MouseEvent| {
+            let navigator = navigator.clone();
+            let onclick = onclick.clone();
+            let client_context = client_context.clone();
+
             if *email_is_valid.deref() && *password_is_valid.deref() {
-                log!("YES THEY ARE");
+
                 // If inputs are valid, than depending on the AuthTemplate you can send requests
 
                 spawn_local(async move {
-                    
+
                     // if a first visit gen a new session
                     if let Ok(unique_id) = LocalStorage::get::<String>("UniqueID") {
                         let fetched_response: String = Request::post("https://localhost:5000/validate_unique_session")
@@ -201,7 +217,9 @@ pub fn modal_window_auth(props: &Props) -> Html {
                 if *auth_template.deref() == AuthTemplate::Login {
                     // Call the login API
                     spawn_local(async move {
-                        
+                        let client_context = client_context.clone();
+                        let onclick = onclick.clone();
+
                         let fetched_response = Request::post("https:/localhost:5000/login")
                             .json(&user)
                             .unwrap()
@@ -215,6 +233,11 @@ pub fn modal_window_auth(props: &Props) -> Html {
                             Ok(token) => {
                                 log!("1_ok!!!!");
                                 let _ = LocalStorage::set("Token", token);
+                                
+                                // Everything was done successfully - login
+                                navigator.push(&Route::Home);
+                                onclick.emit(e);
+                                client_context.is_auth.set(IsAuth::Yes);
                             },
                             Err(_) => { log!("1_ERRR") }
                         }
@@ -223,7 +246,9 @@ pub fn modal_window_auth(props: &Props) -> Html {
                 } else {
                     // Call the Register API
                     spawn_local(async move {
-                        
+                        let client_context = client_context.clone();
+                        let onclick = onclick.clone();
+
                         let fetched_response = Request::post("https:/localhost:5000/register")
                             .json(&user)
                             .unwrap()
@@ -235,8 +260,12 @@ pub fn modal_window_auth(props: &Props) -> Html {
                         
                         match fetched_response {
                             Ok(token) => {
-                                log!("2_ok1!!!!");
                                 let _ = LocalStorage::set("Token", token);
+
+                                // Everything was done successfully - register
+                                navigator.push(&Route::Home);
+                                onclick.emit(e);
+                                client_context.is_auth.set(IsAuth::Yes);
                             },
                             Err(_) => { log!("2_ERRR") }
                         }

@@ -19,7 +19,7 @@ pub async fn guard<B>(
     // Get token
     let token = header.token().to_owned();
 
-    log::info!("token1: {}", token);
+    // log::info!("token1: {}", token);
 
     // let (_, token) = token.split_once(' ').unwrap();
     // let token = token.to_owned();
