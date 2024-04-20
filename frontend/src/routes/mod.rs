@@ -25,9 +25,6 @@ pub fn switch(route: Route) -> Html {
         Route::Home => html! {
             // Free access
             <Home />
-                // <Home /> 
-            // </Page>
-            // <Home />
         },
 
         Route::Cabinet => html! {
