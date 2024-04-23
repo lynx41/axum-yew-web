@@ -1,2 +1,2 @@
-pub mod main_page;
+pub mod home;
 pub mod catalog_page;

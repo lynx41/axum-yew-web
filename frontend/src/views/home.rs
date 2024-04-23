@@ -10,7 +10,7 @@ use crate::components::{
 
 use crate::stores::language::get_selected_langauge;
 use crate::components::props::IsAuth;
-
+use crate::views::layouts::home::MainPage;
 
 use gloo::net::http::Request;
 use gloo::storage::{LocalStorage, Storage};
@@ -104,39 +104,13 @@ pub fn home() -> Html {
     html! {
         <>
 
- 
         <Header />
         
-
-
-        <div>
-            <p>{"HOME PAGE"}</p>
-            <p>{client_context.is_auth.to_string()}</p>
-        </div>
+        <MainPage />
         
-        <Footer />
+        // Home page doesn't need the Footer, because it has it inside the aside of MainPage 
+        // <Footer />
 
-
-
-        
         </>
     }
 }
-
-        // <Header
-        //     selected_language={selected_language.clone()}
-        //     supported_languages={supported_languages.clone()}
-        //     is_auth={is_auth.deref().clone()}
-        // />
-        
-
-
-        // <div>
-        //     <p>{"HOME PAGE"}</p>
-        //     <p>{is_auth.to_string()}</p>
-        // </div>
-        
-        // <Footer 
-        //     selected_language={selected_language.clone()}
-        //     supported_languages={supported_languages.clone()}
-        // />

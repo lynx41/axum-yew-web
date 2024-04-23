@@ -10,3 +10,7 @@ pub struct ClientContext {
     pub supported_languages: Vec<&'static str>,
     pub is_auth: UseStateHandle<IsAuth>
 }
+
+pub struct UtilsContext {
+    pub modal_auth_display: UseStateHandle<bool>,
+}
