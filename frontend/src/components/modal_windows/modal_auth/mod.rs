@@ -23,13 +23,8 @@ pub enum AuthTemplate {
     Register,
 }
 
-#[derive(Properties, PartialEq)]
-pub struct Props {
-    pub onclick: Callback<MouseEvent>,
-}
-
 #[function_component(ModalWindowAuth)]
-pub fn modal_window_auth(props: &Props) -> Html {
+pub fn modal_window_auth() -> Html {
 
     let client_context = use_context::<Rc<ClientContext>>().unwrap().clone();
 
@@ -65,11 +60,10 @@ pub fn modal_window_auth(props: &Props) -> Html {
 
 
     // if the user wants to close the auth modal
-    let onclick = props.onclick.clone();
     let onclick_handler_close = {
-        let onclick = onclick.clone();
+        let client_context = client_context.clone();
         Callback::from(move |e: MouseEvent| {
-            onclick.emit(e);
+            client_context.modal_auth_display.set(false);
         })
     };
     
@@ -84,10 +78,11 @@ pub fn modal_window_auth(props: &Props) -> Html {
     // but when the user clicks outside of the form, the form dissapears
     let is_unactive_onclick = {
         let is_active = is_active.clone();
-        let onclick = props.onclick.clone();
+        let client_context = client_context.clone();
         Callback::from(move |e: MouseEvent| {
             if !*is_active.borrow() {
-                onclick.emit(e);
+                e.stop_propagation();
+                client_context.modal_auth_display.set(false);
             } else {
                 *is_active.borrow_mut() = false;
             }
@@ -159,7 +154,6 @@ pub fn modal_window_auth(props: &Props) -> Html {
 
     let send_btn_onclick = {
         let navigator = navigator.clone();
-        let onclick = onclick.clone();
         let client_context = client_context.clone();
         
         let email_is_valid = email_is_valid.clone();
@@ -171,7 +165,6 @@ pub fn modal_window_auth(props: &Props) -> Html {
 
         Callback::from(move |e: MouseEvent| {
             let navigator = navigator.clone();
-            let onclick = onclick.clone();
             let client_context = client_context.clone();
 
             if *email_is_valid.deref() && *password_is_valid.deref() {
@@ -218,7 +211,6 @@ pub fn modal_window_auth(props: &Props) -> Html {
                     // Call the login API
                     spawn_local(async move {
                         let client_context = client_context.clone();
-                        let onclick = onclick.clone();
 
                         let fetched_response = Request::post("https:/localhost:5000/login")
                             .json(&user)
@@ -235,9 +227,10 @@ pub fn modal_window_auth(props: &Props) -> Html {
                                 let _ = LocalStorage::set("Token", token);
                                 
                                 // Everything was done successfully - login
-                                navigator.push(&Route::Home);
-                                onclick.emit(e);
                                 client_context.is_auth.set(IsAuth::Yes);
+                                client_context.modal_auth_display.set(false);
+                                // navigator.push(&Route::Home);
+
                             },
                             Err(_) => { log!("1_ERRR") }
                         }
@@ -247,7 +240,6 @@ pub fn modal_window_auth(props: &Props) -> Html {
                     // Call the Register API
                     spawn_local(async move {
                         let client_context = client_context.clone();
-                        let onclick = onclick.clone();
 
                         let fetched_response = Request::post("https:/localhost:5000/register")
                             .json(&user)
@@ -263,9 +255,9 @@ pub fn modal_window_auth(props: &Props) -> Html {
                                 let _ = LocalStorage::set("Token", token);
 
                                 // Everything was done successfully - register
-                                navigator.push(&Route::Home);
-                                onclick.emit(e);
+                                // navigator.push(&Route::Home);
                                 client_context.is_auth.set(IsAuth::Yes);
+                                client_context.modal_auth_display.set(false);
                             },
                             Err(_) => { log!("2_ERRR") }
                         }

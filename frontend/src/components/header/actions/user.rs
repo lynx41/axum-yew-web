@@ -1,17 +1,21 @@
-use yew::{function_component, html, Callback, Html, MouseEvent, Properties};
+use std::rc::Rc;
 
-#[derive(Properties, PartialEq)]
-pub struct Props {
-    pub onclick: Callback<MouseEvent>
-}
+use yew::{function_component, html, use_context, Callback, Html, MouseEvent, Properties};
+
+use crate::components::utils::client_context::ClientContext;
 
 #[function_component(User)]
-pub fn user(props: &Props) -> Html {
+pub fn user() -> Html {
     
-    let onclick = props.onclick.clone();
-    let user_btn_onclick = Callback::from(move |e: MouseEvent| {
-        onclick.emit(e);
-    });
+    let client_context = use_context::<Rc<ClientContext>>().unwrap();
+
+    let user_btn_onclick = {
+        let client_context = client_context.clone();
+        Callback::from(move |e: MouseEvent| {
+            e.stop_propagation();
+            client_context.modal_auth_display.set(true);
+        })
+    };
     
     html! {
         <li class="header-actions__item header-actions__item--user">

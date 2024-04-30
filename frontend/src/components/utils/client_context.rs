@@ -8,9 +8,6 @@ use crate::components::props::IsAuth;
 pub struct ClientContext {
     pub selected_language: UseStateHandle<String>,
     pub supported_languages: Vec<&'static str>,
-    pub is_auth: UseStateHandle<IsAuth>
-}
-
-pub struct UtilsContext {
+    pub is_auth: UseStateHandle<IsAuth>,
     pub modal_auth_display: UseStateHandle<bool>,
 }

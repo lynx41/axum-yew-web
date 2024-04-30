@@ -1,8 +1,19 @@
-use yew::{function_component, html, Html};
+use std::rc::Rc;
+
+use yew::{function_component, html, use_context, Html};
+use yew_i18n::use_translation;
+
+use crate::components::utils::client_context::ClientContext;
 
 
 #[function_component(HelpCentre)]
 pub fn help_centre() -> Html {
+    
+    let client_context = use_context::<Rc<ClientContext>>().unwrap();
+    let mut i18n = use_translation();
+
+    i18n.set_translation_language(&client_context.selected_language);
+
     html! {
         <a class="button button--medium button--with-icon main-links__help" href="#help_centre">
             <svg>
@@ -16,7 +27,7 @@ pub fn help_centre() -> Html {
                     </symbol>
                 </use>
             </svg>
-            {"Help Centre"}
+            { i18n.t("title") }
         </a>
     }
 }

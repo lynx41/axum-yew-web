@@ -19,27 +19,28 @@ use crate::components::utils::client_context::ClientContext;
 // pub fn header(props: &HeaderProps) -> Html {
 pub fn header() -> Html {
 
-    // let client_context = use_context::<Rc<ClientContext>>().unwrap();
-
+    let client_context = use_context::<Rc<ClientContext>>().unwrap();
 
     // Check if user clicked on the 'User' button to auth
-    let modal_auth_display = use_state(|| false);
+    // let modal_auth_display = use_state(|| false);
 
-    let user_btn_onclick = {
-        let modal_auth_display = modal_auth_display.clone();
-        Callback::from(move |e: MouseEvent| {
-            e.stop_propagation();
-            modal_auth_display.set(true);
-        })
-    };
+    // let user_btn_onclick = {
+    //     // let modal_auth_display = modal_auth_display.clone();
+    //     let client_context = client_context.clone();
+    //     Callback::from(move |e: MouseEvent| {
+    //         e.stop_propagation();
+    //         client_context.modal_auth_display.set(true);
+    //         // modal_auth_display.set(true);
+    //     })
+    // };
 
-    // If the user wants to close the modal auth window by icon
-    let close_modal_auth = {
-        let modal_auth_display = modal_auth_display.clone();
-        Callback::from(move |_: MouseEvent| {
-            modal_auth_display.set(false);
-        })
-    };
+    // // If the user wants to close the modal auth window by icon
+    // let close_modal_auth = {
+    //     let client_context = client_context.clone();
+    //     Callback::from(move |_: MouseEvent| {
+    //         client_context.modal_auth_display.set(false);
+    //     })
+    // };
 
     html! {
         <>
@@ -58,25 +59,15 @@ pub fn header() -> Html {
 
                     // header search bar
                     <search_bar::SearchBar />
-
-                    // header actions
-                    // <actions::Actions
-                    //     selected_language={props.selected_language.clone()}
-                    //     supported_languages={props.supported_languages.clone()}
-                    //     user_btn_onclick={user_btn_onclick.clone()}
-                    //     is_auth={props.is_auth.clone()}
-                    // />
-                    
-                    <actions::Actions
-                        user_btn_onclick={user_btn_onclick.clone()}
-                    />
+                  
+                    <actions::Actions />
 
                 </div>
             </div>
         </header>
 
-        if *modal_auth_display.deref() {
-            <ModalWindowAuth onclick={close_modal_auth.clone()} />
+        if *client_context.modal_auth_display.deref() {
+            <ModalWindowAuth />
         }
 
         </>

@@ -1,4 +1,9 @@
-use yew::{function_component, html, Html, Properties};
+use std::rc::Rc;
+
+use yew::{function_component, html, use_context, Html, Properties};
+use yew_i18n::use_translation;
+
+use crate::components::utils::client_context::ClientContext;
 
 #[function_component(PerfumeIcon)]
 pub fn perfume_icon() -> Html {
@@ -65,6 +70,11 @@ pub fn category_item(props: &CategoryItemProps) -> Html {
 #[function_component(MenuCategories)]
 pub fn menu_categories() -> Html {
     
+    let client_context = use_context::<Rc<ClientContext>>().unwrap();
+    let mut i18n = use_translation();
+
+    i18n.set_translation_language(&client_context.selected_language);
+
     // GET ALL THE CATEGORIES FROM THE DB, ITER THEM AND SHOW
 
     html! {
@@ -72,14 +82,14 @@ pub fn menu_categories() -> Html {
         <ul class="menu-categories">
             
             <CategoryItem
-                title={String::from("Graphical tablets")}
-                link={String::from("#GraphicalTablets")}
+                title={String::from( i18n.t("Graphical Tables") )}
+                link={String::from( i18n.t("Graphical Tables link") )}
                 icon={ html! { <GraphicalTabletIcon/> } }
             />
 
             <CategoryItem
-                title={String::from("Parfumery")}
-                link={String::from("#Parfumery")}
+                title={String::from( i18n.t("Parfumery") )}
+                link={String::from( i18n.t("Parfumery link") )}
                 icon={ html! { <PerfumeIcon /> } }
             />           
                     

@@ -18,22 +18,12 @@ use yew::{function_component, html, use_context, use_effect_with, use_mut_ref, u
 
 use crate::components::{props::{HeaderActions, IsAuth}, utils::client_context::ClientContext};
 
-#[derive(Properties, PartialEq)]
-pub struct Props {
-    pub user_btn_onclick: Callback<MouseEvent>
-}
-
 
 #[function_component(Actions)]
 // pub fn actions(props: &HeaderActions) -> Html {
-pub fn actions(props: &Props) -> Html {
+pub fn actions() -> Html {
 
     let client_context = use_context::<Rc<ClientContext>>().unwrap();
-
-    let user_onclick = props.user_btn_onclick.clone();
-    let user_btn_onclick = Callback::from(move |e: MouseEvent| {
-        user_onclick.emit(e);
-    });
 
     html! {
         <ul class="header-actions">
@@ -50,7 +40,7 @@ pub fn actions(props: &Props) -> Html {
 
         // can be viewed only by GUESTS
         if {*client_context.is_auth.deref() == IsAuth::No} {
-            <User onclick={props.user_btn_onclick.clone()} />
+            <User />
         }
 
 

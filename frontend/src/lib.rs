@@ -21,6 +21,8 @@ fn contextual_app() -> HtmlResult {
 
     let is_auth = use_state(|| IsAuth::Unknown);
 
+    let modal_auth_display = use_state(|| false);
+
     use_effect_with(
         (),
         {
@@ -62,7 +64,8 @@ fn contextual_app() -> HtmlResult {
     let context = Rc::new(ClientContext {
         selected_language,
         supported_languages,
-        is_auth
+        is_auth,
+        modal_auth_display
     });
 
     Ok(html! {
