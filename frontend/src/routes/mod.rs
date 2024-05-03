@@ -12,8 +12,7 @@ pub enum Route {
     Home,
     #[at("/cabinet")]
     Cabinet,
-    // #[at("/auth")]
-    // Auth,
+    
     #[not_found]
     #[at("/404")]
     NotFound

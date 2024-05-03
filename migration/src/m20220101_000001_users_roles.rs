@@ -114,7 +114,7 @@ impl MigrationTrait for Migration {
 
                     .col(
                         ColumnDef::new(Guest::UniqueId)
-                            .integer()
+                            .string()
                             .not_null()
                             .unique_key()
                     )

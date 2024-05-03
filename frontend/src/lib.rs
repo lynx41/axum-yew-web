@@ -7,10 +7,11 @@ use std::rc::Rc;
 
 use crate::{components::{props::IsAuth, utils::client_context::ClientContext}, routes::{switch, Route}, stores::language::{get_selected_langauge, get_supported_languages}};
 
-use gloo::{net::http::Request, storage::{LocalStorage, Storage}};
+use gloo::{console::log, net::http::Request, storage::{LocalStorage, Storage}};
 use yew::{function_component, html, platform::spawn_local, use_effect_with, use_state, ContextProvider, Html, HtmlResult, Suspense};
 use yew_router::{BrowserRouter, Switch};
 
+const UNIQUE_ID_KEY: &str = "UniqueID";
 
 #[function_component(ContextualApp)]
 fn contextual_app() -> HtmlResult {
@@ -68,6 +69,46 @@ fn contextual_app() -> HtmlResult {
         modal_auth_display
     });
 
+    // Check if the person that visited your site has an UniqueId and its valid
+    use_effect_with(
+        (),
+        {
+            move |()| {
+                spawn_local(async move {
+
+                    match LocalStorage::get::<String>(UNIQUE_ID_KEY) {
+                        Ok(unique_id) => {
+                            // Client has UniqueID, need to validate the data.
+                            let fetched_reponse: String = Request::post("https://localhost:5000/validate_unique_session")
+                                .header(UNIQUE_ID_KEY, &unique_id)
+                                .send()
+                                .await
+                                .unwrap()
+                                .json()
+                                .await
+                                .unwrap();
+                            
+                            let _ = LocalStorage::set(UNIQUE_ID_KEY, fetched_reponse);                        
+                        },
+                        Err(_) => {
+                            // It's client's first visit, create a new UniqueID
+                            let fetched_response: String = Request::get("https://localhost:5000/create_unique_session")
+                                .send()
+                                .await
+                                .unwrap()
+                                .json()
+                                .await
+                                .unwrap();
+
+                            let _ = LocalStorage::set(UNIQUE_ID_KEY, fetched_response);
+                        },
+                    }
+
+                })
+            }
+        }
+    );
+
     Ok(html! {
         <ContextProvider<Rc<ClientContext>> context={context}>
             <Switch<Route> render={switch} />
@@ -79,7 +120,7 @@ fn contextual_app() -> HtmlResult {
 
 #[function_component(App)]
 pub fn app() -> Html {
-        
+
     html! {
         <BrowserRouter>
         

@@ -42,6 +42,7 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(Sessions::UniqueId)
                             .string()
                             .not_null()
+                            .unique_key()
                     )
 
                         .to_owned()

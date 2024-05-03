@@ -9,6 +9,7 @@ use tracing::field::debug;
 use crate::{
     database::users::{self, Model, Entity as UserTable},
     database::sessions::{self, Entity as Sessions},
+    database::guest::{self, Entity as Guests},
     database::user_logs,
     database::user_roles,
     utils::{app_error::AppError, jwt::{self, create_token}}
@@ -73,6 +74,7 @@ pub async fn login(
             
             session_update.token = Set(Some(jwt.clone()));
             session_update.user_id = Set(Some(db_user.id));
+            session_update.guest_id = Set(None);
 
             let _ = session_update.save(&database)
                 .await
@@ -85,7 +87,7 @@ pub async fn login(
             let new_session = sessions::ActiveModel {
                 user_id: Set(Some(db_user.id)),
                 token: Set(Some(jwt.clone())),
-                unique_id: Set(request_user.unique_id),
+                unique_id: Set(request_user.unique_id.clone()),
                 ..Default::default()
             };
 
@@ -96,6 +98,23 @@ pub async fn login(
                     "Internal Server Error"
                 ))?;
         }
+
+        // Remove the Guest record, because we made an user record from guest
+        if let Some(guest_record) = Guests::find()
+        .filter(guest::Column::UniqueId.eq(&request_user.unique_id))
+        .one(&database)
+        .await
+        .map_err(|_| AppError::new(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "Internal server error"))? {
+                let delete_result = guest_record.into_active_model()
+                    .delete(&database)
+                    .await
+                    .map_err(|_| AppError::new(
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        "Internal Server Error"
+                    ))?;
+            }
 
         Ok(Json::from(jwt))
     } else {
@@ -120,8 +139,6 @@ pub async fn register(
         5. make a session and sumbit the token as a response
     */
 
-    log::debug!("ENTRY");
-
     // Check if the database has the email
     let db_user = UserTable::find()
         .filter(users::Column::Email.eq(&req_user.email))
@@ -131,15 +148,29 @@ pub async fn register(
             StatusCode::INTERNAL_SERVER_ERROR,
             "Internal Server Error"))?;
     
-    log::debug!("LAUNCHED EMAIL SEARCH");
-
     if db_user.is_some() {
-        log::debug!("EMAIL ALREADY EXIST IN THE DATABASE");
-        
         return Err(AppError::new(
             StatusCode::INTERNAL_SERVER_ERROR,
              "Internal Server Error"));
     } else {
+
+        // Remove the Guest record, because we made an user record from guest
+        if let Some(guest_record) = Guests::find()
+        .filter(guest::Column::UniqueId.eq(&req_user.unique_id))
+        .one(&database)
+        .await
+        .map_err(|_| AppError::new(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "Internal server error"))? {
+                let delete_result = guest_record.into_active_model()
+                    .delete(&database)
+                    .await
+                    .map_err(|_| AppError::new(
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        "Internal Server Error"
+                    ))?;
+            }
+        
         // if user is real and password is correct
         let jwt = create_token()?;
         log::debug!("NO SUCH EMAIL WAS FOUND");
@@ -194,6 +225,7 @@ pub async fn register(
             "Internal Server Error"))?;
 
         log::debug!("NEW USER_ROLES WAS SAVED TO THE DATABASE");
+
 
         // Create the session
         let new_session = sessions::ActiveModel {

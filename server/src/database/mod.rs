@@ -2,6 +2,7 @@
 
 pub mod prelude;
 
+pub mod guest;
 pub mod roles;
 pub mod sessions;
 pub mod user_info;

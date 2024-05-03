@@ -38,18 +38,33 @@ pub async fn guard<B>(
     // Validating token after getting from the adtabase to obsfucate that the token is wrong
     is_valid(&token)?;
 
+
+
     // Check for result
-    let Some(user) = user else {
-        return Err(
-            AppError::new(
-                StatusCode::UNAUTHORIZED,
-                "You are not autorized."
+    match user {
+        Some(ref u) => {
+            if u.user_id.is_none() {
+                return Err(
+                    AppError::new(
+                        StatusCode::UNAUTHORIZED,
+                        "You are not autorized."
+                    )
+                )
+            }
+        },
+        None => {
+            return Err(
+                AppError::new(
+                    StatusCode::UNAUTHORIZED,
+                    "You are not autorized."
+                )
             )
-        )
+        }
     };
 
+
     // Keep this, so it cash if user doens't exist
-    request.extensions_mut().insert(user);
+    request.extensions_mut().insert(user.unwrap());
 
     Ok(next.run(request).await)
 }

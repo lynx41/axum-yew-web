@@ -9,12 +9,21 @@ pub struct Model {
     pub id: i32,
     pub user_id: Option<i32>,
     pub token: Option<String>,
+    pub guest_id: Option<i32>,
     #[sea_orm(unique)]
     pub unique_id: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(
+        belongs_to = "super::guest::Entity",
+        from = "Column::GuestId",
+        to = "super::guest::Column::Id",
+        on_update = "NoAction",
+        on_delete = "Cascade"
+    )]
+    Guest,
     #[sea_orm(
         belongs_to = "super::users::Entity",
         from = "Column::UserId",
@@ -23,6 +32,12 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     Users,
+}
+
+impl Related<super::guest::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Guest.def()
+    }
 }
 
 impl Related<super::users::Entity> for Entity {
