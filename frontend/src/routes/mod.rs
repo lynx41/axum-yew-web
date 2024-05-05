@@ -1,5 +1,8 @@
 use crate::views::{
-    cabinet::Cabinet, home::Home, auth_guard::AuthGuard
+    cabinet::Cabinet,
+    home::Home,
+    auth_guard::AuthGuard,
+    layouts::category_perfume::CategoryPerfume,
 };
 
 use yew::{html, Html};
@@ -12,7 +15,8 @@ pub enum Route {
     Home,
     #[at("/cabinet")]
     Cabinet,
-    
+    #[at("/perfume")]
+    CategoryParfume,
     #[not_found]
     #[at("/404")]
     NotFound
@@ -31,7 +35,10 @@ pub fn switch(route: Route) -> Html {
             <AuthGuard <Cabinet> />
         },
 
-        
+        Route::CategoryParfume => html! {
+            <CategoryPerfume />
+        },
+
         Route::NotFound => html! { 
             // If 404
             <Redirect<Route> to={Route::Home} />

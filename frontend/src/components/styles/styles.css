@@ -1692,3 +1692,34 @@ section {
 
 
 /* MAIN PAGE SECTION END */
+
+/* CATALOG PAGE SECTION START */
+
+.catalog {
+    margin-bottom: 64px;
+}
+
+.layout-settings {
+    top: 56px;
+    position: sticky;
+    z-index: 21;
+    transition: .22s ease-in-out;
+}
+
+@media (min-width: 1024px) {
+    .layout-settings {
+        top: 72px;
+    }
+}
+
+.catalog-settings {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e9e9e9;
+    background-color: #fff;
+}
+
+/* CATALOG PAGE SECTION END */

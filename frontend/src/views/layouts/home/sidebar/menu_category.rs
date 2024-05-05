@@ -3,6 +3,9 @@ use std::rc::Rc;
 use yew::{function_component, html, use_context, Html, Properties};
 use yew_i18n::use_translation;
 
+use yew_router::components::Link;
+use crate::routes::Route;
+
 use crate::components::utils::client_context::ClientContext;
 
 #[function_component(PerfumeIcon)]
@@ -57,12 +60,15 @@ pub fn category_item(props: &CategoryItemProps) -> Html {
     
     html! {
         <li class="menu-categories__item">
-            <a class="menu-categories__link" apprzroute="" href={props.link.clone()}>
-                <span class="menu-categories__icon">
-                    {props.icon.clone()}
-                </span>
-                {props.title.clone()}
-            </a>
+            <Link<Route> to={Route::CategoryParfume}>
+                <a class="menu-categories__link" apprzroute="" href={props.link.clone()}>
+                    <span class="menu-categories__icon">
+                        {props.icon.clone()}
+                    </span>
+                    {props.title.clone()}
+                </a>
+            </Link<Route>>
+
         </li>
     }
 }
@@ -81,11 +87,11 @@ pub fn menu_categories() -> Html {
         
         <ul class="menu-categories">
             
-            <CategoryItem
-                title={String::from( i18n.t("Graphical Tables") )}
-                link={String::from( i18n.t("Graphical Tables link") )}
-                icon={ html! { <GraphicalTabletIcon/> } }
-            />
+            // <CategoryItem
+            //     title={String::from( i18n.t("Graphical Tables") )}
+            //     link={String::from( i18n.t("Graphical Tables link") )}
+            //     icon={ html! { <GraphicalTabletIcon/> } }
+            // />
 
             <CategoryItem
                 title={String::from( i18n.t("Parfumery") )}

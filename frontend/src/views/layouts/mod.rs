@@ -1,2 +1,2 @@
 pub mod home;
-pub mod catalog_page;
+pub mod category_perfume;
