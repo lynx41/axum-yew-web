@@ -1,8 +1,18 @@
-* {
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote,
+pre, a, abbr, acronym, address, big, cite,
+code, del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var, b, u, i,
+center, dl, dt, dd, ol, ul, li, fieldset, form, label,
+legend, table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, figure, figcaption,
+footer, header, hgroup, menu, nav, output, ruby, section,
+summary, time, mark, audio, video {
     margin: 0;
     padding: 0;
     border: 0;
     font: inherit;
+    font-size: 100%;
     vertical-align: baseline;
 }
 
@@ -1720,6 +1730,61 @@ section {
     padding-bottom: 16px;
     border-bottom: 1px solid #e9e9e9;
     background-color: #fff;
+}
+
+.catalog-settings__sorting {
+    position: relative;
+    margin-left: auto;
+    width: 50%;
+}
+
+@media (min-width: 480px) {
+    .catalog-settings__sorting {
+        width: 205px;
+    }
+}
+
+@media (min-width: 768px) {
+    .catalog-settings__sorting {
+        margin-right: 16px;
+        flex-shrink: 0;
+    }
+}
+
+.select-css {
+    align-items: center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg fill='%23797878' viewBox='0 0 13 7' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M6.5 7a.956.956 0 0 1-.657-.256l-5.57-5.25a.839.839 0 0 1 0-1.237.968.968 0 0 1 1.312 0L6.5 4.888 11.415.257a.968.968 0 0 1 1.313 0 .839.839 0 0 1 0 1.237l-5.572 5.25A.956.956 0 0 1 6.5 7Z'/%3E%3C/svg%3E");
+    background-position: right 12px center;
+    background-repeat: no-repeat, repeat;
+    background-size: 14px 9px;
+    border: 1px solid #d2d2d2;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: #221f1f;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 14px;
+    height: 32px;
+    margin: 0;
+    max-width: 100%;
+    overflow: hidden;
+    padding-left: 12px;
+    text-align: left;
+    width: 100%;
+}
+
+@media (hover: hover) {
+    .select-css:hover {
+        border-color: #a6a5a5;
+    }
+}
+
+.select-css option {
+    font-weight: 400;
 }
 
 /* CATALOG PAGE SECTION END */

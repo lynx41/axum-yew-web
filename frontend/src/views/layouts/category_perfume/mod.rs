@@ -1,4 +1,5 @@
 mod catalog_settings;
+mod section;
 
 use catalog_settings::CatalogSettings;
 
@@ -8,6 +9,7 @@ use crate::components::{
     header::Header
 };
 
+use section::Content;
 
 #[function_component(CategoryPerfume)]
 pub fn category_perfume() -> Html {
@@ -18,11 +20,21 @@ pub fn category_perfume() -> Html {
         <Header />
 
         <div class="catalog">
-            <div class="layout layout_wuth_sidebar">
-            // Perfume category block
+            
+            <div class="layout">
                 <CatalogSettings />
-
             </div>
+
+            <div class="layout layout_with_sidebar">
+                
+                // Section
+                <Content />
+
+
+                // Aside
+            
+            </div>
+
         </div>
         
         <Footer />

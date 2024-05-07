@@ -1,4 +1,4 @@
-use std::ops::Deref;
+use std::{fmt::format, ops::Deref};
 
 use gloo::console::log;
 use web_sys::{HtmlBaseElement, HtmlElement, HtmlHeadElement, HtmlInputElement};
@@ -7,7 +7,13 @@ use yew::{function_component, html, use_node_ref, use_state, use_state_eq, Callb
 #[function_component(CatalogSettings)]
 pub fn catalog_settings() -> Html {
 
-    let order_types = ["ByRaiting".to_owned(), "CheapFirst".to_owned(), "ExpensiveFirst".to_owned(), "NewFirst".to_owned()];
+    let order_types = [
+        "Avg. Customer Review".to_owned(),
+        "Price: Low to High".to_owned(),
+        "Price: High to Low".to_owned(),
+        "Newest Arrivals".to_owned(),
+        "Best Sellers".to_owned(),
+    ];
 
     // emit the variable from select html change
     let selected_order_type = use_state_eq(|| order_types[0].clone());
@@ -27,7 +33,7 @@ pub fn catalog_settings() -> Html {
 
     html! {
         
-        <div class="layout layout-settings">
+        <div class="layout-settings">
             <div class="catalog-settings">
             
             // Filter button mobile
@@ -42,11 +48,6 @@ pub fn catalog_settings() -> Html {
                             html! { <option selected={&*selected_order_type == name}> { name }</option> }
                         })
                     }
-                    
-                    // <option value="1">{"По рейтингу"}</option>
-                    // <option value="2">{"Спочатку дешевші"}</option>
-                    // <option value="3">{"Спочатку дорожчі"}</option>
-                    // <option value="4">{"Новинки"}</option>
                 </select>
             </div>
             

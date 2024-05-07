@@ -2,7 +2,13 @@
 
 pub mod prelude;
 
+pub mod category_parfumery;
+pub mod goods_list;
 pub mod guest;
+pub mod parfumery_brand;
+pub mod parfumery_class;
+pub mod parfumery_seasonality;
+pub mod parfumery_volume;
 pub mod roles;
 pub mod sessions;
 pub mod user_info;
