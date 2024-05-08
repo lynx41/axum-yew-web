@@ -1,9 +1,25 @@
-use yew::{function_component, html, Html};
+use gloo::net::http::Request;
+use shared::models::categories::perfume::PerfumeTile;
+
+use yew::{function_component, html, platform::spawn_local, use_effect_with, use_state, Html, Properties};
+
+
+#[derive(Properties, PartialEq)]
+pub struct CatalogTileProps {
+    pub tile_picture_src: String,
+    pub product_page_src: i32,
+    pub old_price: Option<i32>,
+    pub price: i32,
+    pub title: String,
+}
 
 #[function_component(CatalogTile)]
-pub fn catalog_tile() -> Html {
+pub fn catalog_tile(props: &CatalogTileProps) -> Html {
 
-
+    let price_change: Option<i32> = match props.old_price {
+        Some(old_price) => { Some(old_price / props.price * 100) },
+        None => None
+    };
 
     html! {
         <li class="catalog-grid__cell catalog-grid__cell_type_slim">
@@ -11,8 +27,11 @@ pub fn catalog_tile() -> Html {
                 <div class="goods-tile-inner">
                     <div class="goods-tile__content">
                         
-                        <span class="goods-tile__label promo-label promo-label__type_action">{""}</span>
-
+                        // On condition, if the goods has old price
+                        if let Some(price_percentage) = price_change {
+                            <span class="goods-tile__label promo-label promo-label__type_action">{format!("{}%", price_percentage)}</span>
+                        }
+                        
                         // Icons to add to WishList (Only for users, no guests) and Compare the goods (in future)
                         <div class="goods-tile__actions">
                             <div class="wish-wrapper">
@@ -30,26 +49,29 @@ pub fn catalog_tile() -> Html {
                         </div>
 
                         // Product page
-                        <a class="product-link goods-tile__picture" href="#GoodsID" title="">
-                            <img loading="lazy" alt="GoodsDesc" title="GoodsTitle" src="ImageSrcLink" />
+                        <a class="product-link goods-tile__picture" href={"#LINK_TO_THIS_ONE_GOODS"} title={props.title.clone()}>
+                            <img loading="lazy" alt={props.title.clone()} title={props.title.clone()} src={props.tile_picture_src.clone()} />
                             // if not load yet use this img (in future)
                         </a>
 
                         <div class="goods-tile__colors"></div>
 
-                        <a class="product-link goods-tile__heading" href="#GoodsID" title="GoogdsTitle">
-                            <span class="goods-tile__title">{"TITLE_TEXT"}</span>
+                        <a class="product-link goods-tile__heading" href={"#LINK_TO_THIS_ONE_GOODS"} title={props.title.clone()}>
+                            <span class="goods-tile__title">{props.title.clone()}</span>
                         </a>
 
                         <div class="goods-tile__prices">
-                            <div class="goods-tile__price--old price--gray">
-                                {"OLD_PRICE"}
-                                <span class="currency">{"₴"}</span>
-                            </div>
+                            
+                            if let Some(old_price) = props.old_price {
+                                <div class="goods-tile__price--old price--gray">
+                                    {old_price}
+                                    <span class="currency">{"₴"}</span>
+                                </div>
+                            }
 
-                            <div class="goods-tile__price price--red">
+                            <div class={ if props.old_price.is_some() { "goods-tile__price price--red" } else { "goods-tile__price" } }>
                                 <p class="">
-                                    {"PRICE"}
+                                    {props.price}
                                     <span class="goods-tile__price-currency currency">{"₴"}</span>
                                 </p>
 
@@ -80,14 +102,49 @@ pub fn catalog_tile() -> Html {
 #[function_component(Content)]
 pub fn content() -> Html {
     
+    let goods_vec = use_state(|| Vec::<PerfumeTile>::new());
+    // collect all applyed filters
 
+    // get the query results
+    use_effect_with(
+        (),
+        {
+            let goods_vec = goods_vec.clone();
+            move |()| {
+                let goods_vec = goods_vec.clone();
+                spawn_local(async move {
+                    let fetched_request = Request::get("https://localhost:5000/perfume")
+                        .send()
+                        .await;
+
+                    match fetched_request {
+                        Ok(response) => {
+                            let res_json: Vec<PerfumeTile> = response.json().await.unwrap();
+                            goods_vec.set(res_json);
+                        },
+                        Err(_) => {}
+                    }
+                })
+            }
+        }
+    );
     
     html! {
         <section class="content content_type_catalog">
 
             <ul class="catalog-grid">
-                // iter the response and map as CatalogTile
-                <CatalogTile />
+                
+                {
+                    for goods_vec.iter().map(|item| {
+                        html! { <CatalogTile
+                            tile_picture_src={item.tile_picture_src.clone()}
+                            product_page_src={item.product_page_src}
+                            old_price={item.old_price}
+                            price={item.price}
+                            title={item.title.clone()}
+                        /> }
+                    })
+                }
 
             </ul>
 

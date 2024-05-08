@@ -9,7 +9,7 @@ use shared::models::categories::perfume::PerfumeTile;
 // returns goods from the perfume category
 pub async fn perfume(
     State(database): State<DatabaseConnection>
-) -> Result<Json<String>, AppError> {
+) -> Result<Json<Vec<PerfumeTile>>, AppError> {
 
     // 0. Build filters
     let applyed_filters = Condition::all();
@@ -56,12 +56,12 @@ pub async fn perfume(
             }
     }
 
-    let serialize = serde_json::to_string(&output_vec)
-        .map_err(|_| {
-            AppError::new(
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "Internal server error")
-        })?;
+    // let serialize = serde_json::to_string(&output_vec)
+    //     .map_err(|_| {
+    //         AppError::new(
+    //             StatusCode::INTERNAL_SERVER_ERROR,
+    //             "Internal server error")
+    //     })?;
 
-    Ok(Json(serialize))
+    Ok(Json(output_vec))
 }
