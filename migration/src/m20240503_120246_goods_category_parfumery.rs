@@ -362,7 +362,7 @@ impl MigrationTrait for Migration {
             // record 1
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content1.rozetka.com.ua/goods/images/big/413654724.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/413654724.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 841106965.into(),
@@ -403,7 +403,7 @@ impl MigrationTrait for Migration {
             // record 3
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content1.rozetka.com.ua/goods/images/big/418811944.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/418811944.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841106665).into(),
@@ -444,7 +444,7 @@ impl MigrationTrait for Migration {
             // record 8
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/408932792.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/408932792.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841056738).into(),
@@ -485,7 +485,7 @@ impl MigrationTrait for Migration {
             // record 10
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content.rozetka.com.ua/goods/images/big/408932868.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/408932868.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841064627).into(),
@@ -526,7 +526,7 @@ impl MigrationTrait for Migration {
             // record 11
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "".into(),
+                "https://localhost:5000/public/categories/perfume/408932867.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841057391).into(),
@@ -567,7 +567,7 @@ impl MigrationTrait for Migration {
             // record 12
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/408932861.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/408932861.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (861065198).into(),
@@ -608,7 +608,7 @@ impl MigrationTrait for Migration {
             // record 14
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content.rozetka.com.ua/goods/images/big/406918695.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/406918695.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841161145).into(),
@@ -647,7 +647,7 @@ impl MigrationTrait for Migration {
             // record 16
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/428804448.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/428804448.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841869161).into(),
@@ -686,7 +686,7 @@ impl MigrationTrait for Migration {
             // record 19
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/422874857.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/422874857.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (861934258).into(),
@@ -725,7 +725,7 @@ impl MigrationTrait for Migration {
             // record 31
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content.rozetka.com.ua/goods/images/big/407111600.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/407111600.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (350218784).into(),
@@ -779,7 +779,7 @@ impl MigrationTrait for Migration {
             // record 2
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/381869931.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/381869931.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841105234).into(),
@@ -821,7 +821,7 @@ impl MigrationTrait for Migration {
             // record 4
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content1.rozetka.com.ua/goods/images/big/382260937.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/382260937.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841174930).into(),
@@ -863,7 +863,7 @@ impl MigrationTrait for Migration {
             // record 5
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/382203121.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/382203121.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841074947).into(),
@@ -905,7 +905,7 @@ impl MigrationTrait for Migration {
             // record 6
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/381962495.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/381962495.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841106954).into(),
@@ -947,7 +947,7 @@ impl MigrationTrait for Migration {
             // record 7
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content.rozetka.com.ua/goods/images/big/381690844.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/381690844.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841074909).into(),
@@ -989,7 +989,7 @@ impl MigrationTrait for Migration {
             // record 9
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/381681659.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/381681659.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841074893).into(),
@@ -1031,7 +1031,7 @@ impl MigrationTrait for Migration {
             // record 13
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/382003898.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/382003898.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841174916).into(),
@@ -1073,7 +1073,7 @@ impl MigrationTrait for Migration {
             // record 15
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/353549500.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/353549500.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841723760).into(),
@@ -1115,7 +1115,7 @@ impl MigrationTrait for Migration {
             // record 17
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content.rozetka.com.ua/goods/images/big/359925807.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/359925807.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841865583).into(),
@@ -1157,7 +1157,7 @@ impl MigrationTrait for Migration {
             // record 18
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/356734586.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/356734586.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841172656).into(),
@@ -1201,7 +1201,7 @@ impl MigrationTrait for Migration {
             // record 20
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content.rozetka.com.ua/goods/images/big/384515183.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/384515183.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (861032770).into(),
@@ -1243,7 +1243,7 @@ impl MigrationTrait for Migration {
             // record 21
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content.rozetka.com.ua/goods/images/big/360760380.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/360760380.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (841046210).into(),
@@ -1287,7 +1287,7 @@ impl MigrationTrait for Migration {
             // record 22
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content1.rozetka.com.ua/goods/images/big/377286377.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/377286377.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (402425172).into(),
@@ -1329,7 +1329,7 @@ impl MigrationTrait for Migration {
             // record 23
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/377286087.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/377286087.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (402425160).into(),
@@ -1371,7 +1371,7 @@ impl MigrationTrait for Migration {
             // record 24
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content.rozetka.com.ua/goods/images/big/348989587.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/348989587.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (386034240).into(),
@@ -1413,7 +1413,7 @@ impl MigrationTrait for Migration {
             // record 25
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content1.rozetka.com.ua/goods/images/big/421796195.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/421796195.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (425479677).into(),
@@ -1457,7 +1457,7 @@ impl MigrationTrait for Migration {
             // record 26
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/399508805.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/399508805.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (414612546).into(),
@@ -1501,7 +1501,7 @@ impl MigrationTrait for Migration {
             // record 27
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content1.rozetka.com.ua/goods/images/big/421795472.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/421795472.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (425479668).into(),
@@ -1545,7 +1545,7 @@ impl MigrationTrait for Migration {
             // record 28
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/409870030.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/409870030.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (418447656).into(),
@@ -1589,7 +1589,7 @@ impl MigrationTrait for Migration {
             // record 29
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content1.rozetka.com.ua/goods/images/big/377285410.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/377285410.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (402425418).into(),
@@ -1633,7 +1633,7 @@ impl MigrationTrait for Migration {
             // record 30
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content1.rozetka.com.ua/goods/images/big/409870004.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/409870004.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (418447611).into(),
@@ -1677,7 +1677,7 @@ impl MigrationTrait for Migration {
             // record 32
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content1.rozetka.com.ua/goods/images/big/408849694.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/408849694.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (417844266).into(),
@@ -1719,7 +1719,7 @@ impl MigrationTrait for Migration {
             // record 33
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content.rozetka.com.ua/goods/images/big/377287202.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/377287202.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (402425259).into(),
@@ -1762,7 +1762,7 @@ impl MigrationTrait for Migration {
             // record 34
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content.rozetka.com.ua/goods/images/big/377285417.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/377285417.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (402425430).into(),
@@ -1806,7 +1806,7 @@ impl MigrationTrait for Migration {
             // record 35
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/426317122.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/426317122.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (427863989).into(),
@@ -1850,7 +1850,7 @@ impl MigrationTrait for Migration {
             // record 36
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content.rozetka.com.ua/goods/images/big/373305533.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/373305533.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (400332444).into(),
@@ -1894,7 +1894,7 @@ impl MigrationTrait for Migration {
             // record 37
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content1.rozetka.com.ua/goods/images/big/426315643.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/426315643.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (427863953).into(),
@@ -1938,7 +1938,7 @@ impl MigrationTrait for Migration {
             // record 38
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/426317094.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/426317094.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (427863959).into(),
@@ -1982,7 +1982,7 @@ impl MigrationTrait for Migration {
             // record 39
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/365483344.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/365483344.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (395965497).into(),
@@ -2026,7 +2026,7 @@ impl MigrationTrait for Migration {
             // record 40
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content.rozetka.com.ua/goods/images/big/365026590.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/365026590.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (395654277).into(),
@@ -2070,7 +2070,7 @@ impl MigrationTrait for Migration {
             // record 41
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/365483613.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/365483613.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (395965539).into(),
@@ -2114,7 +2114,7 @@ impl MigrationTrait for Migration {
             // record 42
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/373305526.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/373305526.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (400332411).into(),
@@ -2158,7 +2158,7 @@ impl MigrationTrait for Migration {
             // record 43
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content.rozetka.com.ua/goods/images/big/377287521.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/377287521.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (402425589).into(),
@@ -2202,7 +2202,7 @@ impl MigrationTrait for Migration {
             // record 44
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content.rozetka.com.ua/goods/images/big/377287212.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/377287212.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (402425280).into(),
@@ -2246,7 +2246,7 @@ impl MigrationTrait for Migration {
             // record 45
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content2.rozetka.com.ua/goods/images/big/349291459.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/349291459.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (386340642).into(),
@@ -2290,7 +2290,7 @@ impl MigrationTrait for Migration {
             // record 46
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content1.rozetka.com.ua/goods/images/big/365076907.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/365076907.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (395711229).into(),
@@ -2334,7 +2334,7 @@ impl MigrationTrait for Migration {
             // record 47
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content1.rozetka.com.ua/goods/images/big/373304661.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/373304661.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (400332453).into(),
@@ -2378,7 +2378,7 @@ impl MigrationTrait for Migration {
             // record 48
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content1.rozetka.com.ua/goods/images/big/416136011.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/416136011.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (422063853).into(),
@@ -2422,7 +2422,7 @@ impl MigrationTrait for Migration {
             // record 49
             .values_panic([
                 // TilePictureSrc (String, not null)
-                "https://content1.rozetka.com.ua/goods/images/big/373305529.jpg".into(),
+                "https://localhost:5000/public/categories/perfume/373305529.jpg".into(),
 
                 // ProductPageSrc (Integer, not null)
                 (4032441).into(),

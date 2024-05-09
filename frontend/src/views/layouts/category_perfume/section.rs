@@ -16,8 +16,8 @@ pub struct CatalogTileProps {
 #[function_component(CatalogTile)]
 pub fn catalog_tile(props: &CatalogTileProps) -> Html {
 
-    let price_change: Option<i32> = match props.old_price {
-        Some(old_price) => { Some(old_price / props.price * 100) },
+    let price_change: Option<f32> = match props.old_price {
+        Some(old_price) => { Some(((props.price - old_price) as f32 / old_price as f32) * 100.0) },
         None => None
     };
 
@@ -29,7 +29,7 @@ pub fn catalog_tile(props: &CatalogTileProps) -> Html {
                         
                         // On condition, if the goods has old price
                         if let Some(price_percentage) = price_change {
-                            <span class="goods-tile__label promo-label promo-label__type_action">{format!("{}%", price_percentage)}</span>
+                            <span class="goods-tile__label promo-label promo-label__type_action">{format!("{:.0}%", price_percentage)}</span>
                         }
                         
                         // Icons to add to WishList (Only for users, no guests) and Compare the goods (in future)
@@ -51,7 +51,6 @@ pub fn catalog_tile(props: &CatalogTileProps) -> Html {
                         // Product page
                         <a class="product-link goods-tile__picture" href={"#LINK_TO_THIS_ONE_GOODS"} title={props.title.clone()}>
                             <img loading="lazy" alt={props.title.clone()} title={props.title.clone()} src={props.tile_picture_src.clone()} />
-                            // if not load yet use this img (in future)
                         </a>
 
                         <div class="goods-tile__colors"></div>
@@ -71,8 +70,10 @@ pub fn catalog_tile(props: &CatalogTileProps) -> Html {
 
                             <div class={ if props.old_price.is_some() { "goods-tile__price price--red" } else { "goods-tile__price" } }>
                                 <p class="">
-                                    {props.price}
-                                    <span class="goods-tile__price-currency currency">{"₴"}</span>
+                                    <span class="goods-tile__price-value">
+                                        {props.price}
+                                        <span class="goods-tile__price-currency currency">{"₴"}</span>
+                                    </span>
                                 </p>
 
                                 <button class="buy-button goods-tile__buy-button" aria-label={"Buy"}>

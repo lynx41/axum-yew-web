@@ -1,5 +1,6 @@
 mod catalog_settings;
 mod section;
+mod filters;
 
 use catalog_settings::CatalogSettings;
 
@@ -10,6 +11,7 @@ use crate::components::{
 };
 
 use section::Content;
+use filters::Filters;
 
 #[function_component(CategoryPerfume)]
 pub fn category_perfume() -> Html {
@@ -30,9 +32,9 @@ pub fn category_perfume() -> Html {
                 // Section
                 <Content />
 
-
                 // Aside
-            
+                <Filters />
+
             </div>
 
         </div>

@@ -14,7 +14,7 @@ pub fn main_page() -> Html {
     html! {
 
         <div class="main-page">
-            <div class="layout layout_wuth_sidebar">
+            <div class="layout layout_with_sidebar">
 
                 <Content />
 
