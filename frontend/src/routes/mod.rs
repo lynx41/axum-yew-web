@@ -2,7 +2,8 @@ use crate::views::{
     cabinet::Cabinet,
     home::Home,
     auth_guard::AuthGuard,
-    layouts::category_perfume::CategoryPerfume,
+    layouts::category_perfume::{CategoryPerfume, item_page::ItemPage},
+
 };
 
 use yew::{html, Html};
@@ -17,6 +18,8 @@ pub enum Route {
     Cabinet,
     #[at("/perfume")]
     CategoryParfume,
+    #[at("/goods/:id")]
+    ItemPage { id: i32 },
     #[not_found]
     #[at("/404")]
     NotFound
@@ -37,6 +40,10 @@ pub fn switch(route: Route) -> Html {
 
         Route::CategoryParfume => html! {
             <CategoryPerfume />
+        },
+
+        Route::ItemPage { id } => html! {
+            <ItemPage />
         },
 
         Route::NotFound => html! { 

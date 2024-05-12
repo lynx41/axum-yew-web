@@ -1,5 +1,13 @@
 use serde::{Deserialize, Serialize};
 
+#[derive(Serialize,Deserialize)]
+pub struct PerfumeQuery {
+    pub brand: Option<String>,
+    pub seasonality: Option<String>,
+    pub volume: Option<String>,
+    pub class: Option<String>,
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct PerfumeTile {
     // image url

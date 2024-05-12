@@ -264,10 +264,10 @@ impl MigrationTrait for Migration {
         let insert_parfumery_seasonality = Query::insert()
             .into_table(ParfumerySeasonality::Table)
             .columns([ParfumerySeasonality::Seasonality])
-            .values_panic(["Весінній".into()])
-            .values_panic(["Зимовий".into()])
-            .values_panic(["Літній".into()])
-            .values_panic(["Осінній".into()])
+            .values_panic(["Spring".into()])
+            .values_panic(["Winter".into()])
+            .values_panic(["Summer".into()])
+            .values_panic(["Autumn".into()])
             .to_owned();
 
         let insert_parfumery_volume = Query::insert()
@@ -281,9 +281,9 @@ impl MigrationTrait for Migration {
         let insert_parfumery_class = Query::insert()
             .into_table(ParfumeryClass::Table)
             .columns([ParfumeryClass::Class])
-            .values_panic(["Мас-маркет".into()])
-            .values_panic(["Елітні".into()])
-            .values_panic(["Нішова".into()])
+            .values_panic(["Mass".into()])
+            .values_panic(["Elite".into()])
+            .values_panic(["Special".into()])
             .to_owned();
 
 
@@ -2612,3 +2612,10 @@ enum GoodsList {
     Id,
     Name,
 }
+
+// #[derive(DeriveIden)]
+// enum NameSearcher {
+//     Table,
+//     Id,
+//     Name,
+// }

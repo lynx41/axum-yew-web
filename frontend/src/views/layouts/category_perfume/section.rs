@@ -1,7 +1,9 @@
-use gloo::net::http::Request;
-use shared::models::categories::perfume::PerfumeTile;
+use std::ops::Deref;
 
-use yew::{function_component, html, platform::spawn_local, use_effect_with, use_state, Html, Properties};
+use gloo::{console::log, net::http::Request, storage::{LocalStorage, Storage}, utils::window};
+use shared::models::categories::perfume::{PerfumeQuery, PerfumeTile};
+
+use yew::{function_component, html, platform::spawn_local, use_effect_with, use_state, Callback, Html, Properties};
 
 
 #[derive(Properties, PartialEq)]
@@ -99,29 +101,73 @@ pub fn catalog_tile(props: &CatalogTileProps) -> Html {
     }
 }
 
+#[derive(Properties, PartialEq)]
+pub struct Props {
+    pub href: Option<String>,
+    pub updated: bool,
+    pub on_update: Callback<bool>,
+}
 
 #[function_component(Content)]
-pub fn content() -> Html {
+pub fn content(props: &Props) -> Html {
     
     let goods_vec = use_state(|| Vec::<PerfumeTile>::new());
     // collect all applyed filters
+
+    if props.updated {
+        log!("TRUE FOR UPDATE");
+        props.on_update.emit(true);
+        {
+            let goods_vec = goods_vec.clone();
+            let href = props.href.clone();
+
+                spawn_local(async move {
+                    
+                    let fetched_request = match href {
+                        Some(link) => { Request::get(&format!("https://localhost:5000/perfume?{}", link)) },
+                        None => { Request::get("https://localhost:5000/perfume") }
+                    }
+                        .send()
+                        .await;
+                    
+                    match fetched_request {
+                        Ok(response) => {
+                            let json: Result<Vec<PerfumeTile>, gloo::net::Error>= response.json().await;
+
+                            match json {
+                                Ok(v) => goods_vec.set(v),
+                                Err(e) => log!(e.to_string())
+                            }
+                        },
+                        Err(_) => {}
+                    }
+                })
+        }
+    };
 
     // get the query results
     use_effect_with(
         (),
         {
             let goods_vec = goods_vec.clone();
+            let href = props.href.clone();
             move |()| {
                 let goods_vec = goods_vec.clone();
+                let href = href.clone();
                 spawn_local(async move {
+                    
                     let fetched_request = Request::get("https://localhost:5000/perfume")
                         .send()
                         .await;
 
                     match fetched_request {
                         Ok(response) => {
-                            let res_json: Vec<PerfumeTile> = response.json().await.unwrap();
-                            goods_vec.set(res_json);
+                            let json: Result<Vec<PerfumeTile>, gloo::net::Error>= response.json().await;
+
+                            match json {
+                                Ok(v) => goods_vec.set(v),
+                                Err(e) => log!(e.to_string())
+                            }
                         },
                         Err(_) => {}
                     }

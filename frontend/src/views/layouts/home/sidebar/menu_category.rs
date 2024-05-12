@@ -1,5 +1,7 @@
 use std::rc::Rc;
 
+use gloo::storage::{LocalStorage, Storage};
+use shared::models::categories::perfume::PerfumeQuery;
 use yew::{function_component, html, use_context, Html, Properties};
 use yew_i18n::use_translation;
 
@@ -57,7 +59,7 @@ pub struct CategoryItemProps {
 pub fn category_item(props: &CategoryItemProps) -> Html {
     
     // JUST FORMATE AND SHOW
-    
+
     html! {
         <li class="menu-categories__item">
             <Link<Route> to={Route::CategoryParfume}>
@@ -72,6 +74,7 @@ pub fn category_item(props: &CategoryItemProps) -> Html {
         </li>
     }
 }
+
 
 #[function_component(MenuCategories)]
 pub fn menu_categories() -> Html {
