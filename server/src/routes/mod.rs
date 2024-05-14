@@ -18,6 +18,8 @@ use crate::utils::guard::guard;
 
 use axum::{Router, routing::{get, post}, middleware};
 
+use self::categories::perfume_id::perfume_id;
+
 pub async fn routes(state: State) -> Router {
 
     Router::new()
@@ -29,6 +31,7 @@ pub async fn routes(state: State) -> Router {
         .route_layer(middleware::from_fn_with_state(state.clone(), guard))
 
         // no auth needed
+        .route("/perfume/:id", get(perfume_id))
         .route("/perfume", get(perfume))
 
         // no auth needed utils

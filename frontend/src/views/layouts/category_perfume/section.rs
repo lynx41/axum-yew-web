@@ -4,6 +4,8 @@ use gloo::{console::log, net::http::Request, storage::{LocalStorage, Storage}, u
 use shared::models::categories::perfume::{PerfumeQuery, PerfumeTile};
 
 use yew::{function_component, html, platform::spawn_local, use_effect_with, use_state, Callback, Html, Properties};
+use crate::routes::Route;
+use yew_router::components::Link;
 
 
 #[derive(Properties, PartialEq)]
@@ -51,15 +53,19 @@ pub fn catalog_tile(props: &CatalogTileProps) -> Html {
                         </div>
 
                         // Product page
-                        <a class="product-link goods-tile__picture" href={"#LINK_TO_THIS_ONE_GOODS"} title={props.title.clone()}>
-                            <img loading="lazy" alt={props.title.clone()} title={props.title.clone()} src={props.tile_picture_src.clone()} />
-                        </a>
+                        <Link<Route> to={Route::ItemPage { id: props.product_page_src }}>
+                            <a class="product-link goods-tile__picture" title={props.title.clone()}>
+                                <img loading="lazy" alt={props.title.clone()} title={props.title.clone()} src={props.tile_picture_src.clone()} />
+                            </a>
+                        </Link<Route>>
 
                         <div class="goods-tile__colors"></div>
 
-                        <a class="product-link goods-tile__heading" href={"#LINK_TO_THIS_ONE_GOODS"} title={props.title.clone()}>
-                            <span class="goods-tile__title">{props.title.clone()}</span>
-                        </a>
+                        <Link<Route> to={Route::ItemPage { id: props.product_page_src }}>
+                            <a class="product-link goods-tile__heading" title={props.title.clone()}>
+                                <span class="goods-tile__title">{props.title.clone()}</span>
+                            </a>
+                        </Link<Route>>
 
                         <div class="goods-tile__prices">
                             

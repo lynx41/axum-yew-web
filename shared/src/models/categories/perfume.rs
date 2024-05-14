@@ -36,3 +36,16 @@ impl PerfumeTile {
         }
     }
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct PerfumeGoods {
+    pub tile_picture_src: String,
+    pub product_big_desc: String,
+    pub old_price: Option<i32>,
+    pub price: i32,
+    pub title: String,
+    pub brand: String,
+    pub volume: String,
+    pub seasonality: String,
+    pub class: String,
+}
