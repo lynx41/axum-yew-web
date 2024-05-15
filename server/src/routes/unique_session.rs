@@ -19,8 +19,6 @@ pub async fn create_unique_session(
     // because table "Sessions" has column unique_id with option `unique key` wich makes the job for us,
     // we just need to try to save our record to the database and check the result. 
 
-    info!("HI");
-
     // Generate Unique Id
     let unique_session = create_token()?;
 

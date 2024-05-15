@@ -15,7 +15,7 @@ pub fn create_token() -> Result<String, AppError> {
     let now = chrono::Utc::now();
     let iat = now.timestamp() as usize;
     // let iat = now as usize;
-    let exp = (now + chrono::Duration::seconds(10)).timestamp() as usize;
+    let exp = (now + chrono::Duration::seconds(9000)).timestamp() as usize;
     
     // timestamp now
     // let mut now = chrono::Utc::now();

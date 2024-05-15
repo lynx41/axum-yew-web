@@ -41,7 +41,6 @@ pub async fn login(
     
     // if we have such email in the database
     return if let Some(db_user) = db_user {
-        debug("Hoi");
         
         // validate the password
         if !verify_password(request_user.password, &db_user.password)? {            

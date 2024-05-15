@@ -55,3 +55,6 @@ axum-server = { version = "0.5.1", features = ["tls-rustls"] }
 # Testing BACKEND API
 reqwest = { version = "0.11", features = ["json"] }
 chrono-tz = "0.9.0"
+
+# It's just a HashSet, but it returns in ordered way (no random) 
+linked_hash_set = "0.1.4"
