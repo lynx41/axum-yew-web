@@ -2584,7 +2584,7 @@ enum ParfumeryBrand {
 }
 
 #[derive(DeriveIden)]
-enum CategoryParfumery {
+pub enum CategoryParfumery {
     Table,
     Id,
     // Base fields
@@ -2607,15 +2607,8 @@ enum CategoryParfumery {
 }
 
 #[derive(DeriveIden)]
-enum GoodsList {
+pub enum GoodsList {
     Table,
     Id,
     Name,
 }
-
-// #[derive(DeriveIden)]
-// enum NameSearcher {
-//     Table,
-//     Id,
-//     Name,
-// }

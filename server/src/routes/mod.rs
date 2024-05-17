@@ -7,6 +7,7 @@ mod verify_token;
 mod unique_session;
 mod categories;
 mod history;
+mod wish_list;
 
 use home::home;
 use profile::profile;
@@ -15,10 +16,11 @@ use users::{login, logout, register};
 use verify_token::verify_token;
 use unique_session::{create_unique_session, validate_unique_session};
 use categories::perfume::perfume;
+use wish_list::{wish_list_add, wish_list_check, wish_list_delete};
 use history::{guest::guest_history, user::user_history};
 use crate::utils::guard::guard;
 
-use axum::{Router, routing::{get, post}, middleware};
+use axum::{middleware, routing::{delete, get, post}, Router};
 
 use self::categories::perfume_id::perfume_id;
 
@@ -29,6 +31,10 @@ pub async fn routes(state: State) -> Router {
         // auth needed
         .route("/cabinet", get(profile))
         // auth needed utils
+        .route("/wish_list_check", post(wish_list_check))
+        .route("/wish_list_add", post(wish_list_add))
+        .route("/wish_list_remove", delete(wish_list_delete))
+        
         .route("/user_save_history", post(user_history))
         .route("/verify_token", get(verify_token))
         .route_layer(middleware::from_fn_with_state(state.clone(), guard))

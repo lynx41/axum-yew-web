@@ -22,8 +22,12 @@ pub enum Relation {
     UserInfo,
     #[sea_orm(has_one = "super::user_logs::Entity")]
     UserLogs,
+    #[sea_orm(has_many = "super::user_portrait::Entity")]
+    UserPortrait,
     #[sea_orm(has_one = "super::user_roles::Entity")]
     UserRoles,
+    #[sea_orm(has_many = "super::wish_list::Entity")]
+    WishList,
 }
 
 impl Related<super::sessions::Entity> for Entity {
@@ -50,9 +54,21 @@ impl Related<super::user_logs::Entity> for Entity {
     }
 }
 
+impl Related<super::user_portrait::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::UserPortrait.def()
+    }
+}
+
 impl Related<super::user_roles::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::UserRoles.def()
+    }
+}
+
+impl Related<super::wish_list::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::WishList.def()
     }
 }
 

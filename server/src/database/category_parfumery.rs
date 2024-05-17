@@ -65,6 +65,10 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     ParfumeryVolume,
+    #[sea_orm(has_many = "super::search_goods::Entity")]
+    SearchGoods,
+    #[sea_orm(has_many = "super::wish_list::Entity")]
+    WishList,
 }
 
 impl Related<super::goods_list::Entity> for Entity {
@@ -94,6 +98,18 @@ impl Related<super::parfumery_seasonality::Entity> for Entity {
 impl Related<super::parfumery_volume::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::ParfumeryVolume.def()
+    }
+}
+
+impl Related<super::search_goods::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::SearchGoods.def()
+    }
+}
+
+impl Related<super::wish_list::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::WishList.def()
     }
 }
 
