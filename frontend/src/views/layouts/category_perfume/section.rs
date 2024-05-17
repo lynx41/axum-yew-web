@@ -231,9 +231,14 @@ pub fn content(props: &Props) -> Html {
             let href = props.href.clone();
 
                 spawn_local(async move {
-                    
+                   
                     let fetched_request = match href {
-                        Some(link) => { Request::get(&format!("https://localhost:5000/perfume?{}", link)) },
+                        Some(link) => {
+                            if let Ok(unique_id) = LocalStorage::get::<String>("UniqueID") {
+                                Request::get(&format!("https://localhost:5000/perfume?{}", link))
+                                    .header("UniqueID", &unique_id)
+                            } else { Request::get("https://localhost:5000/perfume") }
+                        },
                         None => { Request::get("https://localhost:5000/perfume") }
                     }
                         .send()

@@ -24,11 +24,11 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(GuestPortrait::GuestId).integer().not_null())
 
-                    .col(ColumnDef::new(GuestPortrait::PriceList).string().not_null())
-                    .col(ColumnDef::new(GuestPortrait::VolumeList).string().not_null())
-                    .col(ColumnDef::new(GuestPortrait::ClassList).string().not_null())
-                    .col(ColumnDef::new(GuestPortrait::SeassonList).string().not_null())
-                    .col(ColumnDef::new(GuestPortrait::BrandList).string().not_null())
+                    .col(ColumnDef::new(GuestPortrait::PriceList).string())
+                    .col(ColumnDef::new(GuestPortrait::VolumeList).string())
+                    .col(ColumnDef::new(GuestPortrait::ClassList).string())
+                    .col(ColumnDef::new(GuestPortrait::SeassonList).string())
+                    .col(ColumnDef::new(GuestPortrait::BrandList).string())
                     .to_owned(),
             )
             .await?;
@@ -47,11 +47,11 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(UserPortrait::UserId).integer().not_null())
 
-                    .col(ColumnDef::new(UserPortrait::PriceList).string().not_null())
-                    .col(ColumnDef::new(UserPortrait::VolumeList).string().not_null())
-                    .col(ColumnDef::new(UserPortrait::ClassList).string().not_null())
-                    .col(ColumnDef::new(UserPortrait::SeassonList).string().not_null())
-                    .col(ColumnDef::new(UserPortrait::BrandList).string().not_null())
+                    .col(ColumnDef::new(UserPortrait::PriceList).string())
+                    .col(ColumnDef::new(UserPortrait::VolumeList).string())
+                    .col(ColumnDef::new(UserPortrait::ClassList).string())
+                    .col(ColumnDef::new(UserPortrait::SeassonList).string())
+                    .col(ColumnDef::new(UserPortrait::BrandList).string())
                     .to_owned(),
             )
             .await?;

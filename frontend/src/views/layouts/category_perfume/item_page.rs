@@ -74,7 +74,13 @@ pub fn item_page() -> Html {
                 let client_context = client_context.clone();
 
                 spawn_local(async move {
-                    let fetched_request = Request::get(&format!("https://localhost:5000/perfume/{}", goods_id.deref()))
+                    let fetched_request = match LocalStorage::get::<String>("UniqueID") {
+                        Ok(unique_id) => {
+                            Request::get(&format!("https://localhost:5000/perfume/{}", goods_id.deref()))
+                                .header("UniqueID", &unique_id)
+                        },
+                        Err(_) => { Request::get(&format!("https://localhost:5000/perfume/{}", goods_id.deref())) }
+                    }
                         .send()
                         .await;
 
