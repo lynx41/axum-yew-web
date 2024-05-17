@@ -3,7 +3,7 @@ use std::io::Bytes;
 use axum::{extract::{Query, State}, headers::Header, http::HeaderMap, Json};
 use log::info;
 use reqwest::StatusCode;
-use sea_orm::{ActiveModelBehavior, ActiveModelTrait, ColumnTrait, Condition, DatabaseConnection, EntityTrait, IntoActiveModel, QueryFilter, Set};
+use sea_orm::{sea_query::{IntoCondition, SimpleExpr}, ActiveModelTrait, ColumnTrait, Condition, DatabaseConnection, EntityTrait, IntoActiveModel, IntoSimpleExpr, QueryFilter, Set};
 
 use crate::{database::category_parfumery::{self, Entity as Parfumeries}, utils::app_error::AppError};
 use crate::database::goods_list::{Entity as GoodsList, self};
@@ -134,107 +134,225 @@ pub async fn perfume(
         applyed_filters = applyed_filters.add(category_parfumery::Column::Price.lte(query_params.maximum_price.unwrap()));
     }
 
-    if let Some(brands) = query_params.brand.clone() {
+    if let Some(brand) = query_params.brand.clone() {
         // split brands to vec and try to find needed ID's
-        let picked_brand_lst = brands.split_terminator(",").map(|name| { name.to_owned() }).collect::<Vec<String>>();
+        let mut picked_brand_lst = brand.split_terminator(",").map(|name| { name.to_owned() }).collect::<Vec<String>>();
+        
+        if let Some(popped_brand) = picked_brand_lst.pop() {
+            if let Some(model) = PerfumeBrands::find()
+                .filter(parfumery_brand::Column::Brand.eq(&popped_brand))
+                .one(&database)
+                .await
+                .map_err(|_| AppError::new(
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    "Internal server error"))? {
 
-        for picked_brand in picked_brand_lst.into_iter() {
-            if let Some(record) = PerfumeBrands::find()
-            .filter(parfumery_brand::Column::Brand.eq(&picked_brand))
-            .one(&database)
-            .await
-            .map_err(|_|
-                AppError::new(StatusCode::INTERNAL_SERVER_ERROR, "Internal server error"))? {
-                    applyed_filters = applyed_filters.add(category_parfumery::Column::BrandId.eq(record.id));
+                        let mut simple_expr = category_parfumery::Column::BrandId.eq(model.id);
+                    
+                        for next_record in picked_brand_lst.into_iter() {
+                            if let Some(next_model) = PerfumeBrands::find()
+                                .filter(parfumery_brand::Column::Brand.eq(&next_record))
+                                .one(&database)
+                                .await
+                                .map_err(|_| AppError::new(
+                                    StatusCode::INTERNAL_SERVER_ERROR,
+                                    "Internal server error"))? {
+                                        simple_expr = simple_expr.or(category_parfumery::Column::BrandId.eq(next_model.id));
 
-                    if user_portrait.is_some() {
-                        let field = user_portrait.as_ref().unwrap().brand_list.clone().unwrap();
-                        let updated_field = portret_update(field, record.id, true).await;
-                        user_portrait.as_mut().unwrap().brand_list = Set(Some(updated_field));
-                    } else if guest_portrait.is_some() {
-                        let field = guest_portrait.as_ref().unwrap().brand_list.clone().unwrap();
-                        let updated_field = portret_update(field, record.id, false).await;
-                        guest_portrait.as_mut().unwrap().brand_list = Set(Some(updated_field));
+                                        if user_portrait.is_some() {
+                                            let field = user_portrait.as_ref().unwrap().brand_list.clone().unwrap();
+                                            let updated_field = portret_update(field, next_model.id, true).await;
+                                            user_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                                        } else if guest_portrait.is_some() {
+                                            let field = guest_portrait.as_ref().unwrap().brand_list.clone().unwrap();
+                                            let updated_field = portret_update(field, next_model.id, false).await;
+                                            guest_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                                        }
+
+                                    }
+                        }
+
+                        // update portrait on first record
+                        if user_portrait.is_some() {
+                            let field = user_portrait.as_ref().unwrap().brand_list.clone().unwrap();
+                            let updated_field = portret_update(field, model.id, true).await;
+                            user_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                        } else if guest_portrait.is_some() {
+                            let field = guest_portrait.as_ref().unwrap().brand_list.clone().unwrap();
+                            let updated_field = portret_update(field, model.id, false).await;
+                            guest_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                        }
+
+                        applyed_filters = applyed_filters.add(simple_expr);
                     }
-                }
+                  
         }
-    }
+    }  
+
 
     if let Some(seasons) = query_params.seasonality.clone() {
-        // split brands to vec and try to find needed ID's
-        let picked_season_lst = seasons.split_terminator(",").map(|name| { name.to_owned() }).collect::<Vec<String>>();
+
+        let mut picked_seasson_lst = seasons.split_terminator(",").map(|name| { name.to_owned() }).collect::<Vec<String>>();
         
-        for picked_season in picked_season_lst.into_iter() {
-            if let Some(record) = PerfumeSeason::find()
-            .filter(parfumery_seasonality::Column::Seasonality.eq(&picked_season))
-            .one(&database)
-            .await
-            .map_err(|_|
-                AppError::new(StatusCode::INTERNAL_SERVER_ERROR, "Internal server error"))? {
-                    applyed_filters = applyed_filters.add(category_parfumery::Column::SeasonalityId.eq(record.id));
+        if let Some(popped_seasson) = picked_seasson_lst.pop() {
+            if let Some(model) = PerfumeSeason::find()
+                .filter(parfumery_seasonality::Column::Seasonality.eq(&popped_seasson))
+                .one(&database)
+                .await
+                .map_err(|_| AppError::new(
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    "Internal server error"))? {
 
-                    if user_portrait.is_some() {
-                        let field = user_portrait.as_ref().unwrap().seasson_list.clone().unwrap();
-                        let updated_field = portret_update(field, record.id, true).await;
-                        user_portrait.as_mut().unwrap().seasson_list = Set(Some(updated_field));
-                    } else if guest_portrait.is_some() {
-                        let field = guest_portrait.as_ref().unwrap().seasson_list.clone().unwrap();
-                        let updated_field = portret_update(field, record.id, false).await;
-                        guest_portrait.as_mut().unwrap().seasson_list = Set(Some(updated_field));
+                        let mut simple_expr = category_parfumery::Column::SeasonalityId.eq(model.id);
+                    
+                        for next_record in picked_seasson_lst.into_iter() {
+                            if let Some(next_model) = PerfumeSeason::find()
+                                .filter(parfumery_seasonality::Column::Seasonality.eq(&next_record))
+                                .one(&database)
+                                .await
+                                .map_err(|_| AppError::new(
+                                    StatusCode::INTERNAL_SERVER_ERROR,
+                                    "Internal server error"))? {
+                                        simple_expr = simple_expr.or(category_parfumery::Column::SeasonalityId.eq(next_model.id));
+
+                                        if user_portrait.is_some() {
+                                            let field = user_portrait.as_ref().unwrap().seasson_list.clone().unwrap();
+                                            let updated_field = portret_update(field, next_model.id, true).await;
+                                            user_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                                        } else if guest_portrait.is_some() {
+                                            let field = guest_portrait.as_ref().unwrap().seasson_list.clone().unwrap();
+                                            let updated_field = portret_update(field, next_model.id, false).await;
+                                            guest_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                                        }
+
+                                    }
+                        }
+
+                        // update portrait on first record
+                        if user_portrait.is_some() {
+                            let field = user_portrait.as_ref().unwrap().seasson_list.clone().unwrap();
+                            let updated_field = portret_update(field, model.id, true).await;
+                            user_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                        } else if guest_portrait.is_some() {
+                            let field = guest_portrait.as_ref().unwrap().seasson_list.clone().unwrap();
+                            let updated_field = portret_update(field, model.id, false).await;
+                            guest_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                        }
+
+                        applyed_filters = applyed_filters.add(simple_expr);
                     }
-                }
+                  
         }
-    }
-
+    }  
+     
+  
     if let Some(volume) = query_params.volume.clone() {
-        // split brands to vec and try to find needed ID's
-        let picked_volume_lst = volume.split_terminator(",").map(|name| { name.to_owned() }).collect::<Vec<String>>();
-        
-        for picked_volume in picked_volume_lst.into_iter() {
-            if let Some(record) = PerfumeVolume::find()
-            .filter(parfumery_volume::Column::Volume.eq(picked_volume.parse::<i32>().unwrap()))
-            .one(&database)
-            .await
-            .map_err(|_|
-                AppError::new(StatusCode::INTERNAL_SERVER_ERROR, "Internal server error"))? {
-                    applyed_filters = applyed_filters.add(category_parfumery::Column::VolumeId.eq(record.id));
 
-                    if user_portrait.is_some() {
-                        let field = user_portrait.as_ref().unwrap().volume_list.clone().unwrap();
-                        let updated_field = portret_update(field, record.id, true).await;
-                        user_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
-                    } else if guest_portrait.is_some() {
-                        let field = guest_portrait.as_ref().unwrap().volume_list.clone().unwrap();
-                        let updated_field = portret_update(field, record.id, false).await;
-                        guest_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+        let mut picked_volume_lst = volume.split_terminator(",").map(|name| { name.to_owned() }).collect::<Vec<String>>();
+        
+        if let Some(popped_volume) = picked_volume_lst.pop() {
+            if let Some(model) = PerfumeVolume::find()
+                .filter(parfumery_volume::Column::Volume.eq(popped_volume.trim().parse::<i16>().unwrap()))
+                .one(&database)
+                .await
+                .map_err(|_| AppError::new(
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    "Internal server error"))? {
+
+                        let mut simple_expr = category_parfumery::Column::VolumeId.eq(model.id);
+                    
+                        for next_record in picked_volume_lst.into_iter() {
+                            if let Some(next_model) = PerfumeVolume::find()
+                                .filter(parfumery_volume::Column::Volume.eq(next_record.trim().parse::<i16>().unwrap()))
+                                .one(&database)
+                                .await
+                                .map_err(|_| AppError::new(
+                                    StatusCode::INTERNAL_SERVER_ERROR,
+                                    "Internal server error"))? {
+                                        simple_expr = simple_expr.or(category_parfumery::Column::VolumeId.eq(next_model.id));
+
+                                        if user_portrait.is_some() {
+                                            let field = user_portrait.as_ref().unwrap().volume_list.clone().unwrap();
+                                            let updated_field = portret_update(field, next_model.id, true).await;
+                                            user_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                                        } else if guest_portrait.is_some() {
+                                            let field = guest_portrait.as_ref().unwrap().volume_list.clone().unwrap();
+                                            let updated_field = portret_update(field, next_model.id, false).await;
+                                            guest_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                                        }
+
+                                    }
+                        }
+
+                        // update portrait on first record
+                        if user_portrait.is_some() {
+                            let field = user_portrait.as_ref().unwrap().volume_list.clone().unwrap();
+                            let updated_field = portret_update(field, model.id, true).await;
+                            user_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                        } else if guest_portrait.is_some() {
+                            let field = guest_portrait.as_ref().unwrap().volume_list.clone().unwrap();
+                            let updated_field = portret_update(field, model.id, false).await;
+                            guest_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                        }
+
+                        applyed_filters = applyed_filters.add(simple_expr);
                     }
-                }
+                  
         }
-    }
+    }  
 
     if let Some(class) = query_params.class.clone() {
-        // split brands to vec and try to find needed ID's
-        let picked_class_lst = class.split_terminator(",").map(|name| { name.to_owned() }).collect::<Vec<String>>();
-        
-        for picked_class in picked_class_lst.into_iter() {
-            if let Some(record) = PerfumeClass::find()
-            .filter(parfumery_class::Column::Class.eq(&picked_class))
-            .one(&database)
-            .await
-            .map_err(|_|
-                AppError::new(StatusCode::INTERNAL_SERVER_ERROR, "Internal server error"))? {
-                    applyed_filters = applyed_filters.add(category_parfumery::Column::ClassId.eq(record.id));
 
-                    if user_portrait.is_some() {
-                        let field = user_portrait.as_ref().unwrap().class_list.clone().unwrap();
-                        let updated_field = portret_update(field, record.id, true).await;
-                        user_portrait.as_mut().unwrap().class_list = Set(Some(updated_field));
-                    } else if guest_portrait.is_some() {
-                        let field = guest_portrait.as_ref().unwrap().class_list.clone().unwrap();
-                        let updated_field = portret_update(field, record.id, false).await;
-                        guest_portrait.as_mut().unwrap().class_list = Set(Some(updated_field));
+        let mut picked_class_lst = class.split_terminator(",").map(|name| { name.to_owned() }).collect::<Vec<String>>();
+        
+        if let Some(popped_class) = picked_class_lst.pop() {
+            if let Some(model) = PerfumeClass::find()
+                .filter(parfumery_class::Column::Class.eq(&popped_class))
+                .one(&database)
+                .await
+                .map_err(|_| AppError::new(
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    "Internal server error"))? {
+
+                        let mut simple_expr = category_parfumery::Column::ClassId.eq(model.id);
+                    
+                        for next_record in picked_class_lst.into_iter() {
+                            if let Some(next_model) = PerfumeClass::find()
+                                .filter(parfumery_class::Column::Class.eq(&next_record))
+                                .one(&database)
+                                .await
+                                .map_err(|_| AppError::new(
+                                    StatusCode::INTERNAL_SERVER_ERROR,
+                                    "Internal server error"))? {
+                                        simple_expr = simple_expr.or(category_parfumery::Column::ClassId.eq(next_model.id));
+
+                                        if user_portrait.is_some() {
+                                            let field = user_portrait.as_ref().unwrap().class_list.clone().unwrap();
+                                            let updated_field = portret_update(field, next_model.id, true).await;
+                                            user_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                                        } else if guest_portrait.is_some() {
+                                            let field = guest_portrait.as_ref().unwrap().class_list.clone().unwrap();
+                                            let updated_field = portret_update(field, next_model.id, false).await;
+                                            guest_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                                        }
+
+                                    }
+                        }
+
+                        // update portrait on first record
+                        if user_portrait.is_some() {
+                            let field = user_portrait.as_ref().unwrap().class_list.clone().unwrap();
+                            let updated_field = portret_update(field, model.id, true).await;
+                            user_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                        } else if guest_portrait.is_some() {
+                            let field = guest_portrait.as_ref().unwrap().class_list.clone().unwrap();
+                            let updated_field = portret_update(field, model.id, false).await;
+                            guest_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                        }
+
+                        applyed_filters = applyed_filters.add(simple_expr);
                     }
-                }
+                  
         }
     } 
 
