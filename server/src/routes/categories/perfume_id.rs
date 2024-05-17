@@ -110,6 +110,10 @@ pub async fn perfume_id(
                 let updated_volume = portret_update(old_volume, goods.volume_id, true).await;
                 user_portrait.as_mut().unwrap().volume_list = Set(Some(updated_volume));
 
+                let old_price = user_portrait.as_ref().unwrap().price_list.clone().unwrap();
+                let updated_price = portret_update(old_price, goods.price, true).await;
+                user_portrait.as_mut().unwrap().price_list = Set(Some(updated_price));
+
                 // save
                 user_portrait.unwrap()
                     .save(&database)
@@ -119,20 +123,24 @@ pub async fn perfume_id(
             } else if guest_portrait.is_some() {
 
                 let old_brand = guest_portrait.as_ref().unwrap().brand_list.clone().unwrap();
-                let updated_brand = portret_update(old_brand, goods.brand_id, true).await;
+                let updated_brand = portret_update(old_brand, goods.brand_id, false).await;
                 guest_portrait.as_mut().unwrap().brand_list = Set(Some(updated_brand));
                 
                 let old_seasson = guest_portrait.as_ref().unwrap().seasson_list.clone().unwrap();
-                let updated_seasson = portret_update(old_seasson, goods.seasonality_id, true).await;
+                let updated_seasson = portret_update(old_seasson, goods.seasonality_id, false).await;
                 guest_portrait.as_mut().unwrap().seasson_list = Set(Some(updated_seasson));
                 
                 let old_class = guest_portrait.as_ref().unwrap().class_list.clone().unwrap();
-                let updated_class = portret_update(old_class, goods.class_id, true).await;
+                let updated_class = portret_update(old_class, goods.class_id, false).await;
                 guest_portrait.as_mut().unwrap().class_list = Set(Some(updated_class));
                 
                 let old_volume = guest_portrait.as_ref().unwrap().volume_list.clone().unwrap();
-                let updated_volume = portret_update(old_volume, goods.volume_id, true).await;
+                let updated_volume = portret_update(old_volume, goods.volume_id, false).await;
                 guest_portrait.as_mut().unwrap().volume_list = Set(Some(updated_volume));
+
+                let old_price = guest_portrait.as_ref().unwrap().price_list.clone().unwrap();
+                let updated_price = portret_update(old_price, goods.price, false).await;
+                guest_portrait.as_mut().unwrap().price_list = Set(Some(updated_price));
 
                 // save
                 guest_portrait.unwrap()

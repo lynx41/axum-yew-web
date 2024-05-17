@@ -115,15 +115,24 @@ pub async fn perfume(
                             }
                     }
                 }
-        // body on condition that header has the unique_id
     }
 
 
-        // Step 5 - Update the record
-
-
-
     let mut applyed_filters = Condition::all();
+
+    // PRICE FILTER
+    if query_params.minimal_price.is_some() && query_params.maximum_price.is_some() {
+        // if min and max are defined
+        applyed_filters = applyed_filters.add(category_parfumery::Column::Price.between(
+            query_params.minimal_price.unwrap(),
+            query_params.maximum_price.unwrap()));
+    } else if query_params.minimal_price.is_some() {
+        // only if min is defined
+        applyed_filters = applyed_filters.add(category_parfumery::Column::Price.gte(query_params.minimal_price.unwrap()));
+    } else if query_params.maximum_price.is_some() {
+        // only if max is defined
+        applyed_filters = applyed_filters.add(category_parfumery::Column::Price.lte(query_params.maximum_price.unwrap()));
+    }
 
     if let Some(brands) = query_params.brand.clone() {
         // split brands to vec and try to find needed ID's
@@ -298,6 +307,16 @@ pub async fn perfume(
         info!("Class: {}", class);
     } else {
         info!("Class: None");
+    }
+    if let Some(min_price) = query_params.minimal_price {
+        info!("Min. price: {}", min_price);
+    } else {
+        info!("Min. price: None");
+    }
+    if let Some(mix_price) = query_params.maximum_price {
+        info!("Max. price: {}", mix_price);
+    } else {
+        info!("Max. price: None");
     }
 
     if let Some(brands) = query_params.brand.clone() {

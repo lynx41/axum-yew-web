@@ -3,27 +3,13 @@ use std::{collections::HashMap, ops::Deref};
 use gloo::{console::log, history::query::ToQuery, net::http::QueryParams, storage::{LocalStorage, Storage}, utils::window};
 use serde::{Deserialize, Serialize};
 use shared::models::categories::perfume::PerfumeQuery;
-use web_sys::HtmlElement;
-use yew::{function_component, html, use_mut_ref, use_state, Callback, Html, MouseEvent, Properties, TargetCast};
+use web_sys::{HtmlElement, HtmlInputElement};
+use yew::{function_component, html, use_mut_ref, use_state, Callback, Event, Html, MouseEvent, Properties, TargetCast};
 use yew_router::{hooks::{use_location, use_navigator}, navigator};
 use yew::html::IntoPropValue;
 
 use crate::routes::Route;
 
-// fn set_query_params() {
-//     set_query_param("Brand", "Avi,Bak");
-// }
-
-// fn set_query_param(param_name: &str, param_value: &str) {
-    
-//     let location = use_location().;
-    
-//     // let location = gloo::utils::window().location();
-//     // let search = if let Ok(the_search) = location {
-        
-//     // }
-    
-// }
 
 fn checkbox_change(e: MouseEvent) {
     let target = e.target_unchecked_into::<HtmlElement>();
@@ -43,17 +29,14 @@ pub struct Props {
 #[function_component(Filters)]
 pub fn filters(props: &Props) -> Html {
 
-
-    // let filter_params = use_state(|| FilterParams::new());
-
-
     let brand_query = use_state(|| HashMap::<i32, String>::new());
     let seasonality_query = use_state(|| HashMap::<i32, String>::new());
     let volume_query = use_state(|| HashMap::<i32, String>::new());
     let class_query = use_state(|| HashMap::<i32, String>::new());
+    let minimal_price = use_state(|| None);
+    let maximum_price = use_state(|| None);
 
     let filters_update = use_state(|| false);
-
     // Update url with an applied filters
     let navigator = use_navigator().unwrap();
 
@@ -71,7 +54,10 @@ pub fn filters(props: &Props) -> Html {
             },
             class: {
                 if !class_query.is_empty() { Some(class_query.iter().map(|(_, name)| { name.to_owned() }).collect::<Vec<String>>().join(",")) } else { None }
-            }
+            },
+
+            minimal_price: *minimal_price.deref(),
+            maximum_price: *maximum_price.deref(),
         };
 
         let _ = LocalStorage::set("LocalQuery", &query);
@@ -379,11 +365,38 @@ pub fn filters(props: &Props) -> Html {
         })
     };
 
+    let update_minimal = {
+        let minimal_price = minimal_price.clone();
+        let filters_update = filters_update.clone();
+        Callback::from(move |e: Event| {
+            let target: HtmlInputElement = e.target_dyn_into().unwrap();
+            let value = target.value().trim().parse::<i32>();
+            if let Ok(number) = value {
+                minimal_price.set(Some(number));
+                filters_update.set(true);
+            }
+        })
+    };
+
+    let update_maximum = {
+        let maximum_price = maximum_price.clone();
+        let filters_update = filters_update.clone();
+        Callback::from(move |e: Event| {
+            let target: HtmlInputElement = e.target_dyn_into().unwrap();
+            let value = target.value().trim().parse::<i32>();
+            if let Ok(number) = value {
+                maximum_price.set(Some(number));
+                filters_update.set(true);
+            }
+        })
+    };
+
     html! {
 
         <aside class="sidebar">
             // sidebar-block with search-bar | when disabled has the role sidebar-block_state_collapsed
             
+
             // Sidebar block - Brand
 
             <div class="sidebar-block">
@@ -453,6 +466,32 @@ pub fn filters(props: &Props) -> Html {
 
             </div>
 
+            // Sidebar block - Price
+            <div class="sidebar-block">
+                <button class="sidebar-block__toggle">
+                    <span class="sidebar-block_toggle-title">
+                        {"Ціна"}
+                        // <span class="sidebar-block__toggle-quantity">{"1"}</span>
+                    </span>
+
+                    <svg class="sidebar-block__toggle-icon">
+                        <use href="#icon-angle-left">
+                            <symbol viewBox="0 0 24 24" id="icon-angle-left">
+                                <path clip-rule="evenodd" d="m16.726 21.6877c-.3799.401-1.0128.4181-1.4137.0383l-10.26633-9.726 10.26633-9.72595c.4009-.37984 1.0338-.36273 1.4137.0382.3798.40094.3627 1.03387-.0383 1.4137l-8.73367 8.27405 8.73367 8.274c.401.3799.4181 1.0128.0383 1.4137z" fill-rule="evenodd"></path>
+                            </symbol>
+                        </use>
+                    </svg>
+                </button>
+            
+                <div class="sidebar-block__inner" style="overflow-x: hidden;">
+                    <div class="slider-filter__form">
+                        <input class="slider-filter__input" onchange={update_minimal} />
+                        <span class="slider-filter__divider">{"-"}</span>
+                        <input class="slider-filter__input" onchange={update_maximum} />
+                    </div>
+                </div>
+            </div>
+
 
             // Sidebar block - Seasonality
 
@@ -506,7 +545,6 @@ pub fn filters(props: &Props) -> Html {
 
 
             // Sidebar block - Volume
-            // Sidebar block - Seasonality
 
             <div class="sidebar-block">
                 <button class="sidebar-block__toggle">

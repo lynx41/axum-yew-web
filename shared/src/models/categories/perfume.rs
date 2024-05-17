@@ -6,6 +6,8 @@ pub struct PerfumeQuery {
     pub seasonality: Option<String>,
     pub volume: Option<String>,
     pub class: Option<String>,
+    pub minimal_price: Option<i32>,
+    pub maximum_price: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize)]
