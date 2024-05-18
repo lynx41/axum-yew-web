@@ -1,6 +1,12 @@
+use std::ops::Deref;
 use std::rc::Rc;
 
-use yew::{function_component, html, use_context, Html, Properties};
+use gloo::console::log;
+use gloo::net::http::Request;
+use gloo::storage::{LocalStorage, Storage};
+use shared::models::categories::perfume::PerfumeGoods;
+use yew::platform::spawn_local;
+use yew::{function_component, html, use_context, use_effect_with, use_state, Html, Properties};
 
 use crate::components::utils::client_context::ClientContext;
 use crate::components::props::IsAuth;
@@ -8,11 +14,17 @@ use crate::components::props::IsAuth;
 #[derive(Properties, PartialEq)]
 pub struct SectionItemProps {
     tile_picture_src: String,
-    product_page_src: String,
+    product_page_src: i32,
     product_desc: String,
     old_price: Option<i32>,
     price: i32,
     title: String,
+    // Debug mode
+    is_debug: bool,
+    brand: String,
+    volume: String,
+    seassonality: String,
+    class: String,
 }
 
 #[function_component(SectionItem)]
@@ -26,10 +38,10 @@ pub fn section_item(props: &SectionItemProps) -> Html {
         <li class="main-goods__cell">
             <div class="tile">
                 <div class="tile__inner">
-                    <a class="product-link tile__picture" href={props.product_page_src.clone()} title="">
+                    <a class="product-link tile__picture" href={props.product_page_src.to_string()} title="">
                         <img loading="lazy" rzimgui="" alt={props.product_desc.clone()} src={props.tile_picture_src.clone()} />
                     </a>
-                    <a class="product-link tile__title" apprzroute="" href={props.product_page_src.clone()} title={props.product_desc.clone()}>
+                    <a class="product-link tile__title" apprzroute="" href={props.product_page_src.to_string()} title={props.product_desc.clone()}>
                         {props.title.clone()}
                     </a>
                     
@@ -87,29 +99,69 @@ pub struct SectionProps {
 pub fn section(props: &SectionProps) -> Html {
 
     // HERE GOES THE DB QUERY RESULTS, YOU ITER THEM AND SHOW RESULTS
+    let goods_vec = use_state(|| Vec::<PerfumeGoods>::new());
+    let is_debug = use_state(|| true);
+
+    use_effect_with(
+        (),
+        {
+            let goods_vec = goods_vec.clone();
+            move |()| {
+                let goods_vec = goods_vec.clone();
+
+                spawn_local(async move {               
+                    match LocalStorage::get::<String>("UniqueID") {
+                        Ok(unique_id) => {
+                            let fetched_request = Request::get("https://localhost:5000/get_suggestions")
+                                .header("UniqueID", &unique_id)
+                                .send()
+                                .await;
+
+                            match fetched_request {
+                                Ok(response) => {
+                                    let json: Result<Vec<PerfumeGoods>, gloo::net::Error> = response.json().await;
+
+                                    match json {
+                                        Ok(v) => goods_vec.set(v),
+                                        Err(e) => { log!(e.to_string()); }
+                                    }
+                                },
+                                Err(e) => { log!(e.to_string()); }
+                            }
+                        },
+                        Err(e) => { log!(e.to_string()); }
+                    }
+                })
+            }
+        }
+    );
+
 
     html! {
         <section class="main-goods">
             <h2 class="main-goods__heading">{props.title.clone()}</h2>
             <ul class="main-goods__grid">
-                
-                <SectionItem
-                        tile_picture_src={String::from("https://content.rozetka.com.ua/goods/images/big/391437084.jpg")}
-                        product_page_src={String::from("#product_page")}
-                        product_desc={String::from("product info")}
-                        old_price={Some(100)}
-                        price={165}
-                        title={String::from("Super cool goods to buy here, don't miss a chance")}
-                />
 
-                <SectionItem
-                        tile_picture_src={String::from("https://content.rozetka.com.ua/goods/images/big/391437084.jpg")}
-                        product_page_src={String::from("#product_page")}
-                        product_desc={String::from("product info")}
-                        old_price={None}
-                        price={165}
-                        title={String::from("Super cool goods to buy here, don't miss a chance")}
-                /> 
+                {
+                    for goods_vec.iter().map(|item| {
+                        html! {
+                            <SectionItem
+                                tile_picture_src={item.tile_picture_src.clone()}
+                                product_page_src={item.product_page_src}
+                                product_desc={item.product_big_desc.clone()}
+                                old_price={item.old_price}
+                                price={item.price}
+                                title={item.title.clone()}
+                                is_debug={is_debug.deref()}
+                                brand={item.brand.clone()}
+                                volume={item.volume.clone()}
+                                seassonality={item.seasonality.clone()}
+                                class={item.class.clone()}
+                            
+                            />
+                        }
+                    })
+                }
             </ul>
         </section>
     }
@@ -127,7 +179,7 @@ pub fn content() -> Html {
 
                 // <Section title={String::from("Specials for you")} />
 
-                <Section title={String::from("Популярні товари")} />
+                // <Section title={String::from("Популярні товари")} />
 
             </div>
         </main>

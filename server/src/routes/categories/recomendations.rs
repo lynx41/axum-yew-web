@@ -237,10 +237,10 @@ pub async fn perfume_suggestions(
     // Step 5 - Make a filter from a portrait parts
 
 
-    let mut amount_of_categories: f32 = 0.5;
-    let mut amount_of_filters: f32 = 0.6;
+    let mut amount_of_categories: f32 = 0.2;
+    let mut amount_of_filters: f32 = 0.3;
     
-    while amount_of_categories != 0.0 {
+    // while amount_of_categories > 0.0 {
         let applyed_filter = create_filter(
             &loaded_portrait,
             amount_of_categories,
@@ -254,7 +254,7 @@ pub async fn perfume_suggestions(
             .await
             .map_err(|_| AppError::new(StatusCode::INTERNAL_SERVER_ERROR, "Internal server error"))?;
 
-        if results.len() >= 5 {
+        if results.len() > 5 {
             for model in results.into_iter() {
                 let brand_name = PerfumeBrands::find()
                     .filter(parfumery_brand::Column::Id.eq(model.brand_id))
@@ -293,6 +293,7 @@ pub async fn perfume_suggestions(
                 output_vec.push({
                     PerfumeGoods {
                         tile_picture_src: model.tile_picture_src,
+                        product_page_src: model.product_page_src,
                         product_big_desc: model.product_big_desc,
                         old_price: model.old_price,
                         price: model.price,
@@ -306,10 +307,10 @@ pub async fn perfume_suggestions(
                 
             }
         
-        } else {
-            amount_of_categories -= 0.1;
-            amount_of_filters -= 0.1;
-        }
+        // } else {
+        //     amount_of_categories -= 0.1;
+        //     amount_of_filters -= 0.1;
+        // }
     }
     
 

@@ -192,6 +192,7 @@ pub async fn perfume_id(
             return Ok(Json(
                 PerfumeGoods {
                     tile_picture_src: goods.tile_picture_src,
+                    product_page_src: goods.product_page_src,
                     product_big_desc: goods.product_big_desc,
                     old_price: goods.old_price,
                     price: goods.price,
