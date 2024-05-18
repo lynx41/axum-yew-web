@@ -16,6 +16,7 @@ use users::{login, logout, register};
 use verify_token::verify_token;
 use unique_session::{create_unique_session, validate_unique_session};
 use categories::perfume::perfume;
+use categories::recomendations::perfume_suggestions;
 use wish_list::{wish_list_add, wish_list_check, wish_list_delete};
 use history::{guest::guest_history, user::user_history};
 use crate::utils::guard::guard;
@@ -40,6 +41,7 @@ pub async fn routes(state: State) -> Router {
         .route_layer(middleware::from_fn_with_state(state.clone(), guard))
 
         // no auth needed
+        .route("/get_suggestions", get(perfume_suggestions))
         .route("/perfume/:id", get(perfume_id))
         .route("/perfume", get(perfume))
 

@@ -92,6 +92,7 @@ pub fn section(props: &SectionProps) -> Html {
         <section class="main-goods">
             <h2 class="main-goods__heading">{props.title.clone()}</h2>
             <ul class="main-goods__grid">
+                
                 <SectionItem
                         tile_picture_src={String::from("https://content.rozetka.com.ua/goods/images/big/391437084.jpg")}
                         product_page_src={String::from("#product_page")}
@@ -122,9 +123,11 @@ pub fn content() -> Html {
         <main class="content content_type_main">          
             <div class="main-page-content">
 
-                <Section title={String::from("Specials for you")} />
+                <Section title={String::from("Особисті рекомендації")} />
 
-                <Section title={String::from("Popular goods")} />
+                // <Section title={String::from("Specials for you")} />
+
+                <Section title={String::from("Популярні товари")} />
 
             </div>
         </main>
