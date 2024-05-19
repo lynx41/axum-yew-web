@@ -198,6 +198,8 @@ pub async fn perfume_suggestions(
                                 "Internal Server Error"))? {
                                     // user portrait was found
                                     user_portrait = Some(usr_portrait);
+                                } else {
+                                    return Ok(Json(output_vec));
                                 }
                     } else if let Some(guest_id) = session.guest_id {
                         if let Some(gst_portrait) = GuestPortraits::find()
@@ -209,6 +211,8 @@ pub async fn perfume_suggestions(
                                 "Internal Server Error"))? {
                                     // guest portrait was found
                                     guest_portrait = Some(gst_portrait);
+                                } else {
+                                    return Ok(Json(output_vec));
                                 }
                     }
                 }
