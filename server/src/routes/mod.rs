@@ -49,6 +49,7 @@ pub async fn routes(state: State) -> Router {
         .route("/guest_save_history", post(guest_history))
         .route("/create_unique_session", get(create_unique_session))
         .route("/validate_unique_session", post(validate_unique_session))
+        .route("/logout", get(logout))
         .route("/register", post(register))
         .route("/login", post(login))
         

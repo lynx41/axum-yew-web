@@ -2,8 +2,9 @@ use std::collections::{HashMap, HashSet};
 
 use axum::http::response;
 use axum::{extract::State, http::HeaderMap, Json};
+use log::info;
 use reqwest::StatusCode;
-use sea_orm::sea_query::SimpleExpr;
+use sea_orm::sea_query::{IntoCondition, SimpleExpr};
 use sea_orm::{ColumnTrait, Condition, DatabaseConnection, EntityTrait, QueryFilter};
 use shared::models::categories::perfume::PerfumeGoods;
 
@@ -57,9 +58,9 @@ pub async fn create_filter(
         let mut picked_result = Vec::new();
 
         for record in category_pool.into_iter() {
-            picked_result.push(record);
-            target_len -= 1;
             if target_len == 0 { break; }
+            target_len -= 1;
+            picked_result.push(record);
         };
 
         picked_result
@@ -102,62 +103,74 @@ pub async fn create_filter(
             
             if price_list.len() >= 5 {
                 price_list.sort();
-                simple_expr = Some(category_parfumery::Column::Price.between(price_list[1], price_list[price_list.len() - 1]));
+                let simple_expr = category_parfumery::Column::Price.between(price_list[1], price_list[price_list.len() - 1]);
+                applyed_filters = applyed_filters.add(simple_expr);
             }
-
-
         // FOR ELSE CATEGORIES
         } else {
             // get the size of the pool, to get the right amount of them
             let target_len = (list.len() as f32 * percentage_of_filters).round() as usize;
 
+            let mut smpl_expr: Option<SimpleExpr> = None;
+
             // Iterate over tags and apply new filter condition
             for (filter, _) in list[..target_len].iter() {
                 // match the code_id and apply filter
+                
                 match code_id {
                     // Category: Price
                         // SKIP
-                    
+
                     // Category: Brand
                     2 => {
-                        if simple_expr.is_some() {
-                            simple_expr = Some(simple_expr.unwrap().and(category_parfumery::Column::BrandId.eq(*filter)));
+                        if smpl_expr.is_some() {
+                            smpl_expr = Some(smpl_expr.unwrap().or(category_parfumery::Column::BrandId.eq(*filter)));
                         } else {
-                            simple_expr = Some(category_parfumery::Column::BrandId.eq(*filter));
+                            smpl_expr = Some(category_parfumery::Column::BrandId.eq(*filter));
                         }
                     },
                     // Category: Volume
                     3 => {
-                        if simple_expr.is_some() {
-                            simple_expr = Some(simple_expr.unwrap().and(category_parfumery::Column::VolumeId.eq(*filter)));
+                        if smpl_expr.is_some() {
+                            smpl_expr = Some(smpl_expr.unwrap().or(category_parfumery::Column::VolumeId.eq(*filter)));
                         } else {
-                            simple_expr = Some(category_parfumery::Column::VolumeId.eq(*filter));
+                            smpl_expr = Some(category_parfumery::Column::VolumeId.eq(*filter));
                         }
                     },
                     // Category: Seasson
                     4 => {
-                        if simple_expr.is_some() {
-                            simple_expr = Some(simple_expr.unwrap().and(category_parfumery::Column::SeasonalityId.eq(*filter)));
+                        if smpl_expr.is_some() {
+                            smpl_expr = Some(smpl_expr.unwrap().or(category_parfumery::Column::SeasonalityId.eq(*filter)));
                         } else {
-                            simple_expr = Some(category_parfumery::Column::SeasonalityId.eq(*filter));
+                            smpl_expr = Some(category_parfumery::Column::SeasonalityId.eq(*filter));
                         }
                     },
                     // Category: Class
                     5 => {
-                        if simple_expr.is_some() {
-                            simple_expr = Some(simple_expr.unwrap().and(category_parfumery::Column::ClassId.eq(*filter)));
+                        if smpl_expr.is_some() {
+                            smpl_expr = Some(smpl_expr.unwrap().or(category_parfumery::Column::ClassId.eq(*filter)));
                         } else {
-                            simple_expr = Some(category_parfumery::Column::ClassId.eq(*filter));
+                            smpl_expr = Some(category_parfumery::Column::ClassId.eq(*filter));
                         }
                     },
                     _ => {  }
                 }
+            }
+
+            if let Some(s_expr) = smpl_expr {
+                if let Some(base_expr) = simple_expr {
+                    simple_expr = Some(base_expr.add(s_expr));
+                } else {
+                    simple_expr = Some(s_expr);
+                }
+                
             }
         }
 
         if let Some(s_expr) = simple_expr {
             applyed_filters = applyed_filters.add(s_expr);
         }
+        
     }
 
     applyed_filters
@@ -241,8 +254,8 @@ pub async fn perfume_suggestions(
     // Step 5 - Make a filter from a portrait parts
 
 
-    let mut amount_of_categories: f32 = 0.2;
-    let mut amount_of_filters: f32 = 0.3;
+    let mut amount_of_categories: f32 = 0.4;
+    let mut amount_of_filters: f32 = 0.5;
     
     // while amount_of_categories > 0.0 {
         let applyed_filter = create_filter(

@@ -162,11 +162,11 @@ pub async fn perfume(
                                         if user_portrait.is_some() {
                                             let field = user_portrait.as_ref().unwrap().brand_list.clone().unwrap();
                                             let updated_field = portret_update(field, next_model.id, true).await;
-                                            user_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                                            user_portrait.as_mut().unwrap().brand_list = Set(Some(updated_field));
                                         } else if guest_portrait.is_some() {
                                             let field = guest_portrait.as_ref().unwrap().brand_list.clone().unwrap();
                                             let updated_field = portret_update(field, next_model.id, false).await;
-                                            guest_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                                            guest_portrait.as_mut().unwrap().brand_list = Set(Some(updated_field));
                                         }
 
                                     }
@@ -176,11 +176,11 @@ pub async fn perfume(
                         if user_portrait.is_some() {
                             let field = user_portrait.as_ref().unwrap().brand_list.clone().unwrap();
                             let updated_field = portret_update(field, model.id, true).await;
-                            user_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                            user_portrait.as_mut().unwrap().brand_list = Set(Some(updated_field));
                         } else if guest_portrait.is_some() {
                             let field = guest_portrait.as_ref().unwrap().brand_list.clone().unwrap();
                             let updated_field = portret_update(field, model.id, false).await;
-                            guest_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                            guest_portrait.as_mut().unwrap().brand_list = Set(Some(updated_field));
                         }
 
                         applyed_filters = applyed_filters.add(simple_expr);
@@ -218,11 +218,11 @@ pub async fn perfume(
                                         if user_portrait.is_some() {
                                             let field = user_portrait.as_ref().unwrap().seasson_list.clone().unwrap();
                                             let updated_field = portret_update(field, next_model.id, true).await;
-                                            user_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                                            user_portrait.as_mut().unwrap().seasson_list = Set(Some(updated_field));
                                         } else if guest_portrait.is_some() {
                                             let field = guest_portrait.as_ref().unwrap().seasson_list.clone().unwrap();
                                             let updated_field = portret_update(field, next_model.id, false).await;
-                                            guest_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                                            guest_portrait.as_mut().unwrap().seasson_list = Set(Some(updated_field));
                                         }
 
                                     }
@@ -232,11 +232,11 @@ pub async fn perfume(
                         if user_portrait.is_some() {
                             let field = user_portrait.as_ref().unwrap().seasson_list.clone().unwrap();
                             let updated_field = portret_update(field, model.id, true).await;
-                            user_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                            user_portrait.as_mut().unwrap().seasson_list = Set(Some(updated_field));
                         } else if guest_portrait.is_some() {
                             let field = guest_portrait.as_ref().unwrap().seasson_list.clone().unwrap();
                             let updated_field = portret_update(field, model.id, false).await;
-                            guest_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                            guest_portrait.as_mut().unwrap().seasson_list = Set(Some(updated_field));
                         }
 
                         applyed_filters = applyed_filters.add(simple_expr);
@@ -329,11 +329,11 @@ pub async fn perfume(
                                         if user_portrait.is_some() {
                                             let field = user_portrait.as_ref().unwrap().class_list.clone().unwrap();
                                             let updated_field = portret_update(field, next_model.id, true).await;
-                                            user_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                                            user_portrait.as_mut().unwrap().class_list = Set(Some(updated_field));
                                         } else if guest_portrait.is_some() {
                                             let field = guest_portrait.as_ref().unwrap().class_list.clone().unwrap();
                                             let updated_field = portret_update(field, next_model.id, false).await;
-                                            guest_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                                            guest_portrait.as_mut().unwrap().class_list = Set(Some(updated_field));
                                         }
 
                                     }
@@ -343,11 +343,11 @@ pub async fn perfume(
                         if user_portrait.is_some() {
                             let field = user_portrait.as_ref().unwrap().class_list.clone().unwrap();
                             let updated_field = portret_update(field, model.id, true).await;
-                            user_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                            user_portrait.as_mut().unwrap().class_list = Set(Some(updated_field));
                         } else if guest_portrait.is_some() {
                             let field = guest_portrait.as_ref().unwrap().class_list.clone().unwrap();
                             let updated_field = portret_update(field, model.id, false).await;
-                            guest_portrait.as_mut().unwrap().volume_list = Set(Some(updated_field));
+                            guest_portrait.as_mut().unwrap().class_list = Set(Some(updated_field));
                         }
 
                         applyed_filters = applyed_filters.add(simple_expr);

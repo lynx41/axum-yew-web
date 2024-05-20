@@ -172,7 +172,7 @@ pub async fn register(
         
         // if user is real and password is correct
         let jwt = create_token()?;
-        log::debug!("NO SUCH EMAIL WAS FOUND");
+        log::info!("NO SUCH EMAIL WAS FOUND");
         // Create the user
         let new_user = users::ActiveModel {
             email: Set(req_user.email),
@@ -185,7 +185,7 @@ pub async fn register(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Internal Server Error"))?;
 
-        log::debug!("NEW USER WAS SAVED TO THE DATABASE");
+        log::info!("NEW USER WAS SAVED TO THE DATABASE");
 
         let new_user_id = new_user_result.id.unwrap();
 
@@ -208,7 +208,7 @@ pub async fn register(
             StatusCode::INTERNAL_SERVER_ERROR,
             "Internal Server Error"))?;
 
-        log::debug!("NEW USER_LOGS WAS SAVED TO THE DATABASE");
+        log::info!("NEW USER_LOGS WAS SAVED TO THE DATABASE");
 
         // Create a record in user_roles
         let new_user_roles = user_roles::ActiveModel {
@@ -223,7 +223,7 @@ pub async fn register(
             StatusCode::INTERNAL_SERVER_ERROR,
             "Internal Server Error"))?;
 
-        log::debug!("NEW USER_ROLES WAS SAVED TO THE DATABASE");
+        log::info!("NEW USER_ROLES WAS SAVED TO THE DATABASE");
 
 
         // Create the session
@@ -239,7 +239,7 @@ pub async fn register(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Internal Server Error"))?;
 
-        log::debug!("NEW SESSION WAS SAVED TO THE DATABASE");
+        log::info!("NEW SESSION WAS SAVED TO THE DATABASE");
 
         Ok(Json(jwt))
     }

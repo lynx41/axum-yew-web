@@ -20,6 +20,7 @@ pub enum Route {
     CategoryParfume,
     #[at("/goods/:id")]
     ItemPage { id: i32 },
+    // #[at("/logout")]
     #[not_found]
     #[at("/404")]
     NotFound
